@@ -98,7 +98,7 @@ namespace CsPotrace
 
 		}
 
-		public double LinearLenght
+		public double LinearLength
 		{
 			get
 			{

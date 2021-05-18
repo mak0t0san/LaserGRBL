@@ -45,14 +45,14 @@ namespace LaserGRBL
 		{
 			try
 			{
-				using (System.IO.StreamWriter sw = new System.IO.StreamWriter(filename))
+				using (var sw = new System.IO.StreamWriter(filename))
 				{
 					if (header)
 						sw.WriteLine(Settings.GetObject("GCode.CustomHeader", GrblCore.GCODE_STD_HEADER));
 
-					for (int i = 0; i < cycles; i++)
+					for (var i = 0; i < cycles; i++)
 					{
-						foreach (GrblCommand cmd in list)
+						foreach (var cmd in list)
 							sw.WriteLine(cmd.Command);
 
 
@@ -73,7 +73,7 @@ namespace LaserGRBL
 		{
 			RiseOnFileLoading(filename);
 
-			long start = Tools.HiResTimer.TotalMilliseconds;
+			var start = Tools.HiResTimer.TotalMilliseconds;
 
 			if (!append)
 				list.Clear();
@@ -81,20 +81,20 @@ namespace LaserGRBL
 			mRange.ResetRange();
 			if (System.IO.File.Exists(filename))
 			{
-				using (System.IO.StreamReader sr = new System.IO.StreamReader(filename))
+				using (var sr = new System.IO.StreamReader(filename))
 				{
 					string line = null;
 					while ((line = sr.ReadLine()) != null)
 						if ((line = line.Trim()).Length > 0)
 						{
-							GrblCommand cmd = new GrblCommand(line);
+							var cmd = new GrblCommand(line);
 							if (!cmd.IsEmpty)
 								list.Add(cmd);
 						}
 				}
 			}
 			Analyze();
-			long elapsed = Tools.HiResTimer.TotalMilliseconds - start;
+			var elapsed = Tools.HiResTimer.TotalMilliseconds - start;
 
 			RiseOnFileLoaded(filename, elapsed);
 		}
@@ -103,31 +103,31 @@ namespace LaserGRBL
 		{
 			RiseOnFileLoading(filename);
 
-			long start = Tools.HiResTimer.TotalMilliseconds;
+			var start = Tools.HiResTimer.TotalMilliseconds;
 
 			if (!append)
 				list.Clear();
 
 			mRange.ResetRange();
 
-			SvgConverter.GCodeFromSVG converter = new SvgConverter.GCodeFromSVG();
+			var converter = new SvgConverter.GCodeFromSVG();
 			converter.GCodeXYFeed = Settings.GetObject("GrayScaleConversion.VectorizeOptions.BorderSpeed", 1000);
 
-			string gcode = converter.convertFromFile(filename);
-			string[] lines = gcode.Split(Environment.NewLine.ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
-			foreach (string l in lines)
+			var gcode = converter.convertFromFile(filename);
+			var lines = gcode.Split(Environment.NewLine.ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
+			foreach (var l in lines)
 			{
-				string line = l;
+				var line = l;
 				if ((line = line.Trim()).Length > 0)
 				{
-					GrblCommand cmd = new GrblCommand(line);
+					var cmd = new GrblCommand(line);
 					if (!cmd.IsEmpty)
 						list.Add(cmd);
 				}
 			}
 
 			Analyze();
-			long elapsed = Tools.HiResTimer.TotalMilliseconds - start;
+			var elapsed = Tools.HiResTimer.TotalMilliseconds - start;
 
 			RiseOnFileLoaded(filename, elapsed);
 		}
@@ -152,7 +152,7 @@ namespace LaserGRBL
 
 			public string formatnumber(int number, float offset, L2LConf c)
 			{
-				double dval = Math.Round(number / (c.vectorfilling ? c.fres : c.res) + offset, 3);
+				var dval = Math.Round(number / (c.vectorfilling ? c.fres : c.res) + offset, 3);
 				return dval.ToString(System.Globalization.CultureInfo.InvariantCulture);
 			}
 
@@ -160,7 +160,7 @@ namespace LaserGRBL
 			// grbl                    with pwm : color can be between 0 and configured SMax - S128
 			// smoothiware             with pwm : Value between 0.00 and 1.00    - S0.50
 			// Marlin : Laser power can not be defined as switch (Add in comment hard coded changes)
-			public string FormatLaserPower(int color, L2LConf c)
+            protected static string FormatLaserPower(int color, L2LConf c)
 			{
 				if (c.firmwareType == Firmware.Smoothie)
 					return string.Format(System.Globalization.CultureInfo.InvariantCulture, "S{0:0.00}", color / 255.0); //maybe scaling to UI maxpower VS config maxpower instead of fixed / 255.0 ?
@@ -182,9 +182,9 @@ namespace LaserGRBL
 				cumX += mPixLen;
 
 				if (c.pwm)
-					return string.Format("X{0} {1}", formatnumber(cumX, c.oX, c), FormatLaserPower(mColor, c));
+					return $"X{formatnumber(cumX, c.oX, c)} {FormatLaserPower(mColor, c)}";
 				else
-					return string.Format("X{0} {1}", formatnumber(cumX, c.oX, c), Fast(c) ? c.lOff : c.lOn);
+					return $"X{formatnumber(cumX, c.oX, c)} {(Fast(c) ? c.lOff : c.lOn)}";
 			}
 		}
 
@@ -197,9 +197,9 @@ namespace LaserGRBL
 				cumY += mPixLen;
 
 				if (c.pwm)
-					return string.Format("Y{0} {1}", formatnumber(cumY, c.oY, c), FormatLaserPower(mColor, c));
+					return $"Y{formatnumber(cumY, c.oY, c)} {FormatLaserPower(mColor, c)}";
 				else
-					return string.Format("Y{0} {1}", formatnumber(cumY, c.oY, c), Fast(c) ? c.lOff : c.lOn);
+					return $"Y{formatnumber(cumY, c.oY, c)} {(Fast(c) ? c.lOff : c.lOn)}";
 			}
 		}
 
@@ -213,9 +213,11 @@ namespace LaserGRBL
 				cumY -= mPixLen;
 
 				if (c.pwm)
-					return string.Format("X{0} Y{1} {2}", formatnumber(cumX, c.oX, c), formatnumber(cumY, c.oY, c), FormatLaserPower(mColor, c));
+					return
+                        $"X{formatnumber(cumX, c.oX, c)} Y{formatnumber(cumY, c.oY, c)} {FormatLaserPower(mColor, c)}";
 				else
-					return string.Format("X{0} Y{1} {2}", formatnumber(cumX, c.oX, c), formatnumber(cumY, c.oY, c), Fast(c) ? c.lOff : c.lOn);
+					return
+                        $"X{formatnumber(cumX, c.oX, c)} Y{formatnumber(cumY, c.oY, c)} {(Fast(c) ? c.lOff : c.lOn)}";
 			}
 		}
 
@@ -229,7 +231,7 @@ namespace LaserGRBL
 					throw new Exception();
 
 				cumY += mPixLen;
-				return string.Format("Y{0}", formatnumber(cumY, c.oY, c));
+				return $"Y{formatnumber(cumY, c.oY, c)}";
 			}
 
 			public override bool IsSeparator
@@ -246,7 +248,7 @@ namespace LaserGRBL
 					throw new Exception();
 
 				cumX += mPixLen;
-				return string.Format("X{0}", formatnumber(cumX, c.oX, c));
+				return $"X{formatnumber(cumX, c.oX, c)}";
 			}
 
 			public override bool IsSeparator
@@ -288,7 +290,7 @@ namespace LaserGRBL
 			RiseOnFileLoading(filename);
 
 			bmp.RotateFlip(RotateFlipType.RotateNoneFlipY);
-			long start = Tools.HiResTimer.TotalMilliseconds;
+			var start = Tools.HiResTimer.TotalMilliseconds;
 
 			if (!append)
 				list.Clear();
@@ -302,7 +304,7 @@ namespace LaserGRBL
 			Potrace.opttolerance = UseOptimize ? (double)Optimize : 0.2;
 			Potrace.curveoptimizing = UseOptimize; //optimize the path p, replacing sequences of Bezier segments by a single segment when possible.
 
-			List<List<Curve>> plist = Potrace.PotraceTrace(bmp);
+			var plist = Potrace.PotraceTrace(bmp);
 			List<List<Curve>> flist = null;
 
 
@@ -313,28 +315,28 @@ namespace LaserGRBL
 			}
 			if (RasterFilling(c.dir))
 			{
-				using (Bitmap ptb = new Bitmap(bmp.Width, bmp.Height))
+				using (var ptb = new Bitmap(bmp.Width, bmp.Height))
 				{
-					using (Graphics g = Graphics.FromImage(ptb))
+					using (var g = Graphics.FromImage(ptb))
 					{
-						double inset = Math.Max(1, c.res / c.fres); //bordino da togliere per finire un po' prima del bordo
+						var inset = Math.Max(1, c.res / c.fres); //bordino da togliere per finire un po' prima del bordo
 
 						Potrace.Export2GDIPlus(plist, g, Brushes.Black, null, inset);
 
-						using (Bitmap resampled = RasterConverter.ImageTransform.ResizeImage(ptb, new Size((int)(bmp.Width * c.fres / c.res) + 1, (int)(bmp.Height * c.fres / c.res) + 1), true, InterpolationMode.HighQualityBicubic))
+						using (var resampled = RasterConverter.ImageTransform.ResizeImage(ptb, new Size((int)(bmp.Width * c.fres / c.res) + 1, (int)(bmp.Height * c.fres / c.res) + 1), true, InterpolationMode.HighQualityBicubic))
 						{
 							if (c.pwm)
-								list.Add(new GrblCommand(String.Format("{0} S0", c.lOn))); //laser on and power to zero
+								list.Add(new GrblCommand($"{c.lOn} S0")); //laser on and power to zero
 							else
-								list.Add(new GrblCommand(String.Format("{0} S255", c.lOff))); //laser off and power to max power
+								list.Add(new GrblCommand($"{c.lOff} S255")); //laser off and power to max power
 
 							//set speed to markspeed
 							// For marlin, need to specify G1 each time :
 							// list.Add(new GrblCommand(String.Format("G1 F{0}", c.markSpeed)));
-							list.Add(new GrblCommand(String.Format("F{0}", c.markSpeed)));
+							list.Add(new GrblCommand($"G0 F{c.markSpeed} ; Set feedrate to {c.markSpeed}mm/m"));
 
 							c.vectorfilling = true;
-							ImageLine2Line(resampled, c);
+							list.AddRange(ImageLine2Line(resampled, c));
 
 							//laser off
 							list.Add(new GrblCommand(c.lOff));
@@ -343,7 +345,7 @@ namespace LaserGRBL
 				}
 			}
 
-			bool supportPWM = Settings.GetObject("Support Hardware PWM", true);
+			var supportPWM = Settings.GetObject("Support Hardware PWM", true);
 
 
 			if (supportPWM)
@@ -354,16 +356,22 @@ namespace LaserGRBL
 			//trace raster filling
 			if (flist != null)
 			{
-				List<string> gc = new List<string>();
+				var gc = new List<string>();
 				if (supportPWM)
-					gc.AddRange(Potrace.Export2GCode(flist, c.oX, c.oY, c.res, $"S{c.maxPower}", "S0", bmp.Size, skipcmd));
-				else
-					gc.AddRange(Potrace.Export2GCode(flist, c.oX, c.oY, c.res, c.lOn, c.lOff, bmp.Size, skipcmd));
+                {
+                    gc.AddRange(Potrace.Export2GCode(flist, c.oX, c.oY, c.res, $"S{c.maxPower}", "S0", bmp.Size, skipcmd));
+                }
+                else
+                {
+                    gc.AddRange(Potrace.Export2GCode(flist, c.oX, c.oY, c.res, c.lOn, c.lOff, bmp.Size, skipcmd));
+                }
 
-				list.Add(new GrblCommand(String.Format("F{0}", c.markSpeed)));
-				foreach (string code in gc)
-					list.Add(new GrblCommand(code));
-			}
+                list.Add(new GrblCommand($"G0 F{c.markSpeed} ; Set feedrate to {c.markSpeed}mm/m"));
+                foreach (var t in gc)
+                {
+                    list.Add(new GrblCommand(t));
+                }
+            }
 
 
 			//trace borders
@@ -375,7 +383,7 @@ namespace LaserGRBL
 				else
 					plist.Reverse(); //la lista viene fornita da potrace con prima esterni e poi interni, ma per il taglio è meglio il contrario
 
-				List<string> gc = new List<string>();
+				var gc = new List<string>();
 				if (supportPWM)
 					gc.AddRange(Potrace.Export2GCode(plist, c.oX, c.oY, c.res, $"S{c.maxPower}", "S0", bmp.Size, skipcmd));
 				else
@@ -383,10 +391,12 @@ namespace LaserGRBL
 
 				// For marlin, need to specify G1 each time :
 				//list.Add(new GrblCommand(String.Format("G1 F{0}", c.borderSpeed)));
-				list.Add(new GrblCommand(String.Format("F{0}", c.borderSpeed)));
-				foreach (string code in gc)
-					list.Add(new GrblCommand(code));
-			}
+				list.Add(new GrblCommand($"G0 F{c.borderSpeed} ; Set feedrate to {c.markSpeed}mm/m"));
+                foreach (var t in gc)
+                {
+                    list.Add(new GrblCommand(t));
+                }
+            }
 
 			//if (supportPWM)
 			//	gc = Potrace.Export2GCode(flist, c.oX, c.oY, c.res, $"S{c.maxPower}", "S0", bmp.Size, skipcmd);
@@ -402,7 +412,7 @@ namespace LaserGRBL
 				list.Add(new GrblCommand(c.lOff));  //necessaria perché finisce con solo S0
 
 			Analyze();
-			long elapsed = Tools.HiResTimer.TotalMilliseconds - start;
+			var elapsed = Tools.HiResTimer.TotalMilliseconds - start;
 
 			RiseOnFileLoaded(filename, elapsed);
 		}
@@ -447,7 +457,7 @@ namespace LaserGRBL
 
 			bmp.RotateFlip(RotateFlipType.RotateNoneFlipY);
 
-			long start = Tools.HiResTimer.TotalMilliseconds;
+			var start = Tools.HiResTimer.TotalMilliseconds;
 
 			if (!append)
 				list.Clear();
@@ -458,18 +468,22 @@ namespace LaserGRBL
 			//list.Add(new GrblCommand("G90")); //(Moved to custom Header)
 
 			//move fast to offset (or slow if disable G0) and set mark speed
-			list.Add(new GrblCommand(String.Format("{0} X{1} Y{2} F{3}", skipcmd, formatnumber(c.oX), formatnumber(c.oY), c.markSpeed)));
+			list.Add(new GrblCommand($"{skipcmd} X{formatnumber(c.oX)} Y{formatnumber(c.oY)} F{c.markSpeed}"));
 			if (c.pwm)
-				list.Add(new GrblCommand(String.Format("{0} S0", c.lOn))); //laser on and power to zero
-			else
-				list.Add(new GrblCommand(String.Format("{0} S255", c.lOff))); //laser off and power to maxpower
+            {
+                list.Add(new GrblCommand($"{c.lOn} S0")); //laser on and power to zero
+            }
+            else
+            {
+                list.Add(new GrblCommand($"{c.lOff} S255")); //laser off and power to maxpower
+            }
 
-			//set speed to markspeed						
+            //set speed to markspeed						
 			// For marlin, need to specify G1 each time :
 			//list.Add(new GrblCommand(String.Format("G1 F{0}", c.markSpeed)));
 			//list.Add(new GrblCommand(String.Format("F{0}", c.markSpeed))); //replaced by the first move to offset and set speed
 
-			ImageLine2Line(bmp, c);
+			list.AddRange(ImageLine2Line(bmp, c));
 
 			//laser off
 			list.Add(new GrblCommand(c.lOff));
@@ -478,38 +492,45 @@ namespace LaserGRBL
 			//list.Add(new GrblCommand("G0 X0 Y0")); //moved to custom footer
 
 			Analyze();
-			long elapsed = Tools.HiResTimer.TotalMilliseconds - start;
+			var elapsed = Tools.HiResTimer.TotalMilliseconds - start;
 
 			RiseOnFileLoaded(filename, elapsed);
 		}
 
 		// For Marlin, as we sen M106 command, we need to know last color send
 		//private int lastColorSend = 0;
-		private void ImageLine2Line(Bitmap bmp, L2LConf c)
+		private List<GrblCommand> ImageLine2Line(Bitmap bmp, L2LConf c)
 		{
-			bool fast = true;
-			List<ColorSegment> segments = GetSegments(bmp, c);
-			List<GrblCommand> temp = new List<GrblCommand>();
+			var fast = true;
+			var segments = GetSegments(bmp, c);
+			var temp = new List<GrblCommand>();
 
-			int cumX = 0;
-			int cumY = 0;
+			var cumX = 0;
+			var cumY = 0;
 
-			foreach (ColorSegment seg in segments)
+			foreach (var seg in segments)
 			{
-				bool changeGMode = (fast != seg.Fast(c)); //se veloce != dafareveloce
+				var changeGMode = (fast != seg.Fast(c)); //se veloce != dafareveloce
 
+                var param = "";
 				if (seg.IsSeparator && !fast) //fast = previous segment contains S0 color
 				{
-					if (c.pwm)
-						temp.Add(new GrblCommand("S0"));
-					else
-						temp.Add(new GrblCommand(c.lOff)); //laser off
+                    if (c.pwm)
+                    {
+                        param = "S0";
+                        //temp.Add(new GrblCommand("S0"));
+                    }
+                    else
+                    {
+                        param = c.lOff;
+                        // temp.Add(new GrblCommand(c.lOff)); //laser off
+                    }
 				}
 
 				fast = seg.Fast(c);
 
-				// For marlin firmware, we must defined laser power before moving (unsing M106 or M107)
-				// So we have to speficy gcode (G0 or G1) each time....
+				// For marlin firmware, we must defined laser power before moving (using M106 or M107)
+				// So we have to specify gcode (G0 or G1) each time....
 				//if (c.firmwareType == Firmware.Marlin)
 				//{
 				//	// Add M106 only if color has changed
@@ -522,33 +543,33 @@ namespace LaserGRBL
 				//{
 
 				if (changeGMode)
-					temp.Add(new GrblCommand(String.Format("{0} {1}", fast ? skipcmd : "G1", seg.ToGCodeNumber(ref cumX, ref cumY, c))));
+					temp.Add(new GrblCommand($"{(fast ? skipcmd : "G1")} {seg.ToGCodeNumber(ref cumX, ref cumY, c)} {param}"));
 				else
-					temp.Add(new GrblCommand(seg.ToGCodeNumber(ref cumX, ref cumY, c)));
+					temp.Add(new GrblCommand($"{seg.ToGCodeNumber(ref cumX, ref cumY, c)} {param}"));
 
 				//}
 			}
 
 			temp = OptimizeLine2Line(temp, c);
-			list.AddRange(temp);
+            return temp;
 		}
 
 
 		private List<GrblCommand> OptimizeLine2Line(List<GrblCommand> temp, L2LConf c)
 		{
-			List<GrblCommand> rv = new List<GrblCommand>();
+			var rv = new List<GrblCommand>();
 
-			decimal curX = (decimal)c.oX;
-			decimal curY = (decimal)c.oY;
-			bool cumulate = false;
+			var curX = (decimal)c.oX;
+			var curY = (decimal)c.oY;
+			var cumulate = false;
 
-			foreach (GrblCommand cmd in temp)
+			foreach (var cmd in temp)
 			{
 				try
 				{
 					cmd.BuildHelper();
 
-					bool oldcumulate = cumulate;
+					var oldcumulate = cumulate;
 
 					if (c.pwm)
 					{
@@ -572,9 +593,11 @@ namespace LaserGRBL
 					if (oldcumulate && !cumulate) //cumulate down front -> flush
 					{
 						if (c.pwm)
-							rv.Add(new GrblCommand(string.Format("{0} X{1} Y{2} S0", skipcmd, formatnumber((double)curX), formatnumber((double)curY))));
+							rv.Add(new GrblCommand(
+                                $"{skipcmd} X{formatnumber((double) curX)} Y{formatnumber((double) curY)} S0"));
 						else
-							rv.Add(new GrblCommand(string.Format("{0} X{1} Y{2} {3}", skipcmd, formatnumber((double)curX), formatnumber((double)curY), c.lOff)));
+							rv.Add(new GrblCommand(
+                                $"{skipcmd} X{formatnumber((double) curX)} Y{formatnumber((double) curY)} {c.lOff}"));
 
 						//curX = curY = 0;
 					}
@@ -597,20 +620,20 @@ namespace LaserGRBL
 
 		private List<ColorSegment> GetSegments(Bitmap bmp, L2LConf c)
 		{
-			bool uni = Settings.GetObject("Unidirectional Engraving", false);
+			var uni = Settings.GetObject("Unidirectional Engraving", false);
 
-			List<ColorSegment> rv = new List<ColorSegment>();
+			var rv = new List<ColorSegment>();
 			if (c.dir == RasterConverter.ImageProcessor.Direction.Horizontal || c.dir == RasterConverter.ImageProcessor.Direction.Vertical)
 			{
-				bool h = (c.dir == RasterConverter.ImageProcessor.Direction.Horizontal); //horizontal/vertical
+				var h = (c.dir == RasterConverter.ImageProcessor.Direction.Horizontal); //horizontal/vertical
 
-				for (int i = 0; i < (h ? bmp.Height : bmp.Width); i++)
+				for (var i = 0; i < (h ? bmp.Height : bmp.Width); i++)
 				{
-					bool d = uni || IsEven(i); //direct/reverse
-					int prevCol = -1;
-					int len = -1;
+					var d = uni || IsEven(i); //direct/reverse
+					var prevCol = -1;
+					var len = -1;
 
-					for (int j = d ? 0 : (h ? bmp.Width - 1 : bmp.Height - 1); d ? (j < (h ? bmp.Width : bmp.Height)) : (j >= 0); j = (d ? j + 1 : j - 1))
+					for (var j = d ? 0 : (h ? bmp.Width - 1 : bmp.Height - 1); d ? (j < (h ? bmp.Width : bmp.Height)) : (j >= 0); j = (d ? j + 1 : j - 1))
 						ExtractSegment(bmp, h ? j : i, h ? i : j, !d, ref len, ref prevCol, rv, c); //extract different segments
 
 					if (h)
@@ -657,19 +680,19 @@ namespace LaserGRBL
 
 				rv.Add(new VSeparator()); //new line
 
-				int w = bmp.Width;
-				int h = bmp.Height;
-				for (int slice = 0; slice < w + h - 1; ++slice)
+				var w = bmp.Width;
+				var h = bmp.Height;
+				for (var slice = 0; slice < w + h - 1; ++slice)
 				{
-					bool d = uni || IsEven(slice); //direct/reverse
+					var d = uni || IsEven(slice); //direct/reverse
 
-					int prevCol = -1;
-					int len = -1;
+					var prevCol = -1;
+					var len = -1;
 
-					int z1 = slice < h ? 0 : slice - h + 1;
-					int z2 = slice < w ? 0 : slice - w + 1;
+					var z1 = slice < h ? 0 : slice - h + 1;
+					var z2 = slice < w ? 0 : slice - w + 1;
 
-					for (int j = (d ? z1 : slice - z2); d ? j <= slice - z2 : j >= z1; j = (d ? j + 1 : j - 1))
+					for (var j = (d ? z1 : slice - z2); d ? j <= slice - z2 : j >= z1; j = (d ? j + 1 : j - 1))
 						ExtractSegment(bmp, j, slice - j, !d, ref len, ref prevCol, rv, c); //extract different segments
 					rv.Add(new DSegment(prevCol, len + 1, !d)); //close last segment
 
@@ -677,7 +700,7 @@ namespace LaserGRBL
 
 					if (uni) // add "go back"
 					{
-						int slen = (slice - z1 - z2) + 1;
+						var slen = (slice - z1 - z2) + 1;
 						rv.Add(new DSegment(0, slen, true));
 						//System.Diagnostics.Debug.WriteLine(slen);
 					}
@@ -712,7 +735,7 @@ namespace LaserGRBL
 		private void ExtractSegment(Bitmap image, int x, int y, bool reverse, ref int len, ref int prevCol, List<ColorSegment> rv, L2LConf c)
 		{
 			len++;
-			int col = GetColor(image, x, y, c.minPower, c.maxPower, c.pwm);
+			var col = GetColor(image, x, y, c.minPower, c.maxPower, c.pwm);
 			if (prevCol == -1)
 				prevCol = col;
 
@@ -736,23 +759,23 @@ namespace LaserGRBL
 			if (list == null || list.Count <= 1)
 				return list;
 
-			int maxblocksize = 2048;    //max number of List<Curve> to process in a single OptimizePaths operation
+			var maxblocksize = 2048;    //max number of List<Curve> to process in a single OptimizePaths operation
 
-			int blocknum = (int)Math.Ceiling(list.Count / (double)maxblocksize);
+			var blocknum = (int)Math.Ceiling(list.Count / (double)maxblocksize);
 			if (blocknum <= 1)
 				return OptimizePaths(list, changecost);
 
 			System.Diagnostics.Debug.WriteLine("Count: " + list.Count);
 
-			Task<List<List<Curve>>>[] taskArray = new Task<List<List<Curve>>>[blocknum];
-			for (int i = 0; i < taskArray.Length; i++)
+			var taskArray = new Task<List<List<Curve>>>[blocknum];
+			for (var i = 0; i < taskArray.Length; i++)
 				taskArray[i] = Task.Factory.StartNew((data) => OptimizePaths((List<List<Curve>>)data, changecost), GetTaskJob(i, taskArray.Length, list));
 			Task.WaitAll(taskArray);
 
-			List<List<Curve>> rv = new List<List<Curve>>();
-			for (int i = 0; i < taskArray.Length; i++)
+			var rv = new List<List<Curve>>();
+			for (var i = 0; i < taskArray.Length; i++)
 			{
-				List<List<Curve>> lc = taskArray[i].Result;
+				var lc = taskArray[i].Result;
 				rv.AddRange(lc);
 			}
 
@@ -761,10 +784,10 @@ namespace LaserGRBL
 
 		private List<List<Curve>> GetTaskJob(int threadIndex, int threadCount, List<List<Curve>> list)
 		{
-			int from = (threadIndex * list.Count) / threadCount;
-			int to = ((threadIndex + 1) * list.Count) / threadCount;
+			var from = (threadIndex * list.Count) / threadCount;
+			var to = ((threadIndex + 1) * list.Count) / threadCount;
 
-			List<List<Curve>> rv = list.GetRange(from, to - from);
+			var rv = list.GetRange(from, to - from);
 			System.Diagnostics.Debug.WriteLine($"Thread {threadIndex}/{threadCount}: {rv.Count} [from {from} to {to}]");
 			return rv;
 		}
@@ -775,21 +798,21 @@ namespace LaserGRBL
 				return list;
 
 
-			dPoint Origin = new dPoint(0, 0);
-			int nearestToZero = 0;
-			double bestDistanceToZero = Double.MaxValue;
+			var Origin = new dPoint(0, 0);
+			var nearestToZero = 0;
+			var bestDistanceToZero = Double.MaxValue;
 
-			double[,] costs = new double[list.Count, list.Count];   //array bidimensionale dei costi di viaggio dal punto finale della curva 1 al punto iniziale della curva 2
-			for (int c1 = 0; c1 < list.Count; c1++)                 //ciclo due volte sulla lista di curve
+			var costs = new double[list.Count, list.Count];   //array bidimensionale dei costi di viaggio dal punto finale della curva 1 al punto iniziale della curva 2
+			for (var c1 = 0; c1 < list.Count; c1++)                 //ciclo due volte sulla lista di curve
 			{
-				dPoint c1fa = list[c1].First().A;	//punto iniziale del primo segmento del percorso (per calcolo distanza dallo zero)
+				var c1fa = list[c1].First().A;	//punto iniziale del primo segmento del percorso (per calcolo distanza dallo zero)
 				//dPoint c1la = list[c1].Last().A;	//punto iniziale dell'ulimo segmento del percorso (per calcolo direzione di uscita)
-				dPoint c1lb = list[c1].Last().B;	//punto finale dell'ultimo segmento del percorso (per calcolo distanza tra percorsi e direzione di uscita e ingresso)
+				var c1lb = list[c1].Last().B;	//punto finale dell'ultimo segmento del percorso (per calcolo distanza tra percorsi e direzione di uscita e ingresso)
 				
 
-				for (int c2 = 0; c2 < list.Count; c2++)             //con due indici diversi c1, c2
+				for (var c2 = 0; c2 < list.Count; c2++)             //con due indici diversi c1, c2
 				{
-					dPoint c2fa = list[c2].First().A;     //punto iniziale del primo segmento del percorso (per calcolo distanza tra percorsi e direzione di ingresso)
+					var c2fa = list[c2].First().A;     //punto iniziale del primo segmento del percorso (per calcolo distanza tra percorsi e direzione di ingresso)
 					//dPoint c2fb = list[c2].First().B;     //punto finale del primo segmento del percorso (per calcolo direzione di continuazione)
 
 					if (c1 == c2)
@@ -799,7 +822,7 @@ namespace LaserGRBL
 				}
 
 				//trova quello che parte più vicino allo zero
-				double distZero = SquareDistanceZero(c1fa);
+				var distZero = SquareDistanceZero(c1fa);
 				if (distZero < bestDistanceToZero)
 				{
 					nearestToZero = c1;
@@ -808,24 +831,24 @@ namespace LaserGRBL
 			}
 
 			//Create a list of unvisited places
-			List<int> unvisited = Enumerable.Range(0, list.Count).ToList();
+			var unvisited = Enumerable.Range(0, list.Count).ToList();
 
 			//Pick nearest points
-			List<List<CsPotrace.Curve>> bestPath = new List<List<Curve>>();
+			var bestPath = new List<List<Curve>>();
 
 			//parti da quello individuato come "il più vicino allo zero"
 			bestPath.Add(list[nearestToZero]);
 			unvisited.Remove(nearestToZero);
-			int lastIndex = nearestToZero;
+			var lastIndex = nearestToZero;
 			
 			while (unvisited.Count > 0)
 			{
-				int bestIndex = 0;
-				double bestDistance = double.MaxValue;
+				var bestIndex = 0;
+				var bestDistance = double.MaxValue;
 
-				foreach (int nextIndex in unvisited)                    //cicla tutti gli "unvisited" rimanenti
+				foreach (var nextIndex in unvisited)                    //cicla tutti gli "unvisited" rimanenti
 				{
-					double dist = costs[lastIndex, nextIndex];
+					var dist = costs[lastIndex, nextIndex];
 					if (dist < bestDistance)
 					{
 						bestIndex = nextIndex;                    //salva il bestIndex
@@ -869,8 +892,8 @@ namespace LaserGRBL
 
 		private static double SquareDistance(dPoint a, dPoint b)
 		{
-			double dX = b.X - a.X;
-			double dY = b.Y - a.Y;
+			var dX = b.X - a.X;
+			var dY = b.Y - a.Y;
 			return ((dX * dX) + (dY * dY));
 		}
 		private static double SquareDistanceZero(dPoint a)
@@ -881,19 +904,19 @@ namespace LaserGRBL
 		//questo metodo ritorna un fattore 0 se c'è continuità di direzione, 0.5 su angolo 90°, 1 se c'è inversione totale (180°)
 		private double DirectionChange(dPoint p1, dPoint p2, dPoint p3)
 		{
-			double angleA = Math.Atan2(p2.Y - p1.Y, p2.X - p1.X); //angolo del segmento corrente
-			double angleB = Math.Atan2(p3.Y - p2.Y, p3.X - p2.X); //angolo della retta congiungente
+			var angleA = Math.Atan2(p2.Y - p1.Y, p2.X - p1.X); //angolo del segmento corrente
+			var angleB = Math.Atan2(p3.Y - p2.Y, p3.X - p2.X); //angolo della retta congiungente
 
-			double angleAB = Math.Abs(Math.Abs(angleB) - Math.Abs(angleA)) ; //0 se stessa direzione, pigreco se inverte direzione
-			double factor = angleAB / Math.PI;
+			var angleAB = Math.Abs(Math.Abs(angleB) - Math.Abs(angleA)) ; //0 se stessa direzione, pigreco se inverte direzione
+			var factor = angleAB / Math.PI;
 			return factor;
 		}
 
 
 		private int GetColor(Bitmap I, int X, int Y, int min, int max, bool pwm)
 		{
-			Color C = I.GetPixel(X, Y);
-			int rv = (255 - C.R) * C.A / 255;
+			var C = I.GetPixel(X, Y);
+			var rv = (255 - C.R) * C.A / 255;
 
 			if (rv == 0)
 				return 0; //zero is always zero
@@ -941,11 +964,11 @@ namespace LaserGRBL
 		{
 			if (!mRange.MovingRange.ValidRange) return;
 
-			GrblCommand.StatePositionBuilder spb = new GrblCommand.StatePositionBuilder();
-			ProgramRange.XYRange scaleRange = mRange.MovingRange;
+			var spb = new GrblCommand.StatePositionBuilder();
+			var scaleRange = mRange.MovingRange;
 
 			//Get scale factors for both directions. To preserve the aspect ratio, use the smaller scale factor.
-			float zoom = scaleRange.Width > 0 && scaleRange.Height > 0 ? Math.Min((float)size.Width / (float)scaleRange.Width, (float)size.Height / (float)scaleRange.Height) * 0.95f : 1;
+			var zoom = scaleRange.Width > 0 && scaleRange.Height > 0 ? Math.Min((float)size.Width / (float)scaleRange.Width, (float)size.Height / (float)scaleRange.Height) * 0.95f : 1;
 
 
 			ScaleAndPosition(g, size, scaleRange, zoom);
@@ -956,8 +979,8 @@ namespace LaserGRBL
 
 		private void DrawJobPreview(Graphics g, GrblCommand.StatePositionBuilder spb, float zoom)
 		{
-			bool firstline = true; //used to draw the first line in a different color
-			foreach (GrblCommand cmd in list)
+			var firstline = true; //used to draw the first line in a different color
+			foreach (var cmd in list)
 			{
 				try
 				{
@@ -967,8 +990,8 @@ namespace LaserGRBL
 
 					if (spb.TrueMovement())
 					{
-						Color linecolor = Color.FromArgb(spb.GetCurrentAlpha(mRange.SpindleRange), firstline ? ColorScheme.PreviewFirstMovement : spb.LaserBurning ? ColorScheme.PreviewLaserPower : ColorScheme.PreviewOtherMovement);
-						using (Pen pen = GetPen(linecolor))
+						var linecolor = Color.FromArgb(spb.GetCurrentAlpha(mRange.SpindleRange), firstline ? ColorScheme.PreviewFirstMovement : spb.LaserBurning ? ColorScheme.PreviewLaserPower : ColorScheme.PreviewOtherMovement);
+						using (var pen = GetPen(linecolor))
 						{
 							pen.ScaleTransform(1 / zoom, 1 / zoom);
 
@@ -984,12 +1007,13 @@ namespace LaserGRBL
 							}
 							else if (spb.G2G3 && cmd.IsArcMovement && pen.Color.A > 0)
 							{
-								GrblCommand.G2G3Helper ah = spb.GetArcHelper(cmd);
+								var ah = spb.GetArcHelper(cmd);
 
 								if (ah.RectW > 0 && ah.RectH > 0)
 								{
 									try { g.DrawArc(pen, (float)ah.RectX, (float)ah.RectY, (float)ah.RectW, (float)ah.RectH, (float)(ah.StartAngle * 180 / Math.PI), (float)(ah.AngularWidth * 180 / Math.PI)); }
-									catch { System.Diagnostics.Debug.WriteLine(String.Format("Ex drwing arc: W{0} H{1}", ah.RectW, ah.RectH)); }
+									catch { System.Diagnostics.Debug.WriteLine(
+                                        $"Ex drwing arc: W{ah.RectW} H{ah.RectH}"); }
 								}
 							}
 
@@ -1008,14 +1032,14 @@ namespace LaserGRBL
 
 			RiseOnFileLoading(filename);
 
-			long start = Tools.HiResTimer.TotalMilliseconds;
+			var start = Tools.HiResTimer.TotalMilliseconds;
 
 			if (!append)
 				list.Clear();
 
 			mRange.ResetRange();
 
-			string content = "";
+			var content = "";
 
 			try
 			{
@@ -1023,28 +1047,28 @@ namespace LaserGRBL
 			}
 			catch (Exception ex) { Logger.LogException("Centerline", ex); }
 
-			SvgConverter.GCodeFromSVG converter = new SvgConverter.GCodeFromSVG();
+			var converter = new SvgConverter.GCodeFromSVG();
 			converter.GCodeXYFeed = Settings.GetObject("GrayScaleConversion.VectorizeOptions.BorderSpeed", 1000);
 			converter.SvgScaleApply = true;
 			converter.SvgMaxSize = (float)Math.Max(bmp.Width / 10.0, bmp.Height / 10.0);
 			converter.UserOffset.X = Settings.GetObject("GrayScaleConversion.Gcode.Offset.X", 0F);
 			converter.UserOffset.Y = Settings.GetObject("GrayScaleConversion.Gcode.Offset.Y", 0F);
 
-			string gcode = converter.convertFromText(content);
-			string[] lines = gcode.Split(Environment.NewLine.ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
-			foreach (string l in lines)
+			var gcode = converter.convertFromText(content);
+			var lines = gcode.Split(Environment.NewLine.ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
+			foreach (var l in lines)
 			{
-				string line = l;
+				var line = l;
 				if ((line = line.Trim()).Length > 0)
 				{
-					GrblCommand cmd = new GrblCommand(line);
+					var cmd = new GrblCommand(line);
 					if (!cmd.IsEmpty)
 						list.Add(cmd);
 				}
 			}
 
 			Analyze();
-			long elapsed = Tools.HiResTimer.TotalMilliseconds - start;
+			var elapsed = Tools.HiResTimer.TotalMilliseconds - start;
 
 			RiseOnFileLoaded(filename, elapsed);
 
@@ -1052,18 +1076,18 @@ namespace LaserGRBL
 
 		private void Analyze() //analyze the file and build global range and timing for each command
 		{
-			GrblCommand.StatePositionBuilder spb = new GrblCommand.StatePositionBuilder();
+			var spb = new GrblCommand.StatePositionBuilder();
 
 			mRange.ResetRange();
 			mRange.UpdateXYRange("X0", "Y0", false);
 			mEstimatedTotalTime = TimeSpan.Zero;
 
-			foreach (GrblCommand cmd in list)
+			foreach (var cmd in list)
 			{
 				try
 				{
-					GrblConf conf = Settings.GetObject("Grbl Configuration", new GrblConf());
-					TimeSpan delay = spb.AnalyzeCommand(cmd, true, conf);
+					var conf = Settings.GetObject("Grbl Configuration", new GrblConf());
+					var delay = spb.AnalyzeCommand(cmd, true, conf);
 
 					mRange.UpdateSRange(spb.S);
 
@@ -1084,7 +1108,7 @@ namespace LaserGRBL
 		{
 			g.ResetTransform();
 			float margin = 10;
-			CartesianQuadrant q = Quadrant;
+			var q = Quadrant;
 			if (q == CartesianQuadrant.Unknown || q == CartesianQuadrant.I)
 			{
 				//Scale and invert Y
@@ -1129,10 +1153,10 @@ namespace LaserGRBL
 		{
 			//RectangleF frame = new RectangleF(-s.Width / zoom, -s.Height / zoom, s.Width / zoom, s.Height / zoom);
 
-			SizeF wSize = new SizeF(s.Width / zoom, s.Height / zoom);
+			var wSize = new SizeF(s.Width / zoom, s.Height / zoom);
 
 			//draw cartesian plane
-			using (Pen pen = GetPen(ColorScheme.PreviewText))
+			using (var pen = GetPen(ColorScheme.PreviewText))
 			{
 				pen.ScaleTransform(1 / zoom, 1 / zoom);
 				g.DrawLine(pen, -wSize.Width, 0.0f, wSize.Width, 0.0f);
@@ -1142,7 +1166,7 @@ namespace LaserGRBL
 			//draw job range
 			if (mRange.DrawingRange.ValidRange)
 			{
-				using (Pen pen = GetPen(ColorScheme.PreviewJobRange))
+				using (var pen = GetPen(ColorScheme.PreviewJobRange))
 				{
 					pen.DashStyle = DashStyle.Dash;
 					pen.DashPattern = new float[] { 1.0f / zoom, 2.0f / zoom }; //pen.DashPattern = new float[] { 1f / zoom, 2f / zoom};
@@ -1153,11 +1177,11 @@ namespace LaserGRBL
 					g.DrawLine(pen, (float)mRange.DrawingRange.X.Min, -wSize.Height, (float)mRange.DrawingRange.X.Min, wSize.Height);
 					g.DrawLine(pen, (float)mRange.DrawingRange.X.Max, -wSize.Height, (float)mRange.DrawingRange.X.Max, wSize.Height);
 
-					CartesianQuadrant q = Quadrant;
-					bool right = q == CartesianQuadrant.I || q == CartesianQuadrant.IV;
-					bool top = q == CartesianQuadrant.I || q == CartesianQuadrant.II;
+					var q = Quadrant;
+					var right = q == CartesianQuadrant.I || q == CartesianQuadrant.IV;
+					var top = q == CartesianQuadrant.I || q == CartesianQuadrant.II;
 
-					string format = "0";
+					var format = "0";
 					if (mRange.DrawingRange.Width < 50 && mRange.DrawingRange.Height < 50)
 						format = "0.0";
 
@@ -1169,50 +1193,50 @@ namespace LaserGRBL
 			}
 
 			//draw ruler
-			using (Pen pen = GetPen(ColorScheme.PreviewRuler))
+			using (var pen = GetPen(ColorScheme.PreviewRuler))
 			{
 				//pen.DashStyle = DashStyle.Dash;
 				//pen.DashPattern = new float[] { 1.0f / zoom, 2.0f / zoom }; //pen.DashPattern = new float[] { 1f / zoom, 2f / zoom};
 				pen.ScaleTransform(1.0f / zoom, 1.0f / zoom);
-				CartesianQuadrant q = Quadrant;
-				bool right = q == CartesianQuadrant.Unknown || q == CartesianQuadrant.I || q == CartesianQuadrant.IV; //l'oggetto si trova a destra
-				bool top = q == CartesianQuadrant.Unknown || q == CartesianQuadrant.I || q == CartesianQuadrant.II; //l'oggetto si trova in alto
+				var q = Quadrant;
+				var right = q == CartesianQuadrant.Unknown || q == CartesianQuadrant.I || q == CartesianQuadrant.IV; //l'oggetto si trova a destra
+				var top = q == CartesianQuadrant.Unknown || q == CartesianQuadrant.I || q == CartesianQuadrant.II; //l'oggetto si trova in alto
 
-				string format = "0";
+				var format = "0";
 
 				if (mRange.DrawingRange.ValidRange && mRange.DrawingRange.Width < 50 && mRange.DrawingRange.Height < 50)
 					format = "0.0";
 
 				//scala orizzontale
-				Tools.RulerStepCalculator hscale = new Tools.RulerStepCalculator(-wSize.Width, wSize.Width, (int)(2 * s.Width / 100));
+				var hscale = new Tools.RulerStepCalculator(-wSize.Width, wSize.Width, (int)(2 * s.Width / 100));
 
-				double h1 = (top ? -4.0 : 4.0) / zoom;
-				double h2 = 1.8 * h1;
-				double h3 = (top ? 1.0 : -1.0) / zoom;
+				var h1 = (top ? -4.0 : 4.0) / zoom;
+				var h2 = 1.8 * h1;
+				var h3 = (top ? 1.0 : -1.0) / zoom;
 
-				for (float d = (float)hscale.FirstSmall; d < wSize.Width; d += (float)hscale.SmallStep)
+				for (var d = (float)hscale.FirstSmall; d < wSize.Width; d += (float)hscale.SmallStep)
 					g.DrawLine(pen, d, 0, d, (float)h1);
 
-				for (float d = (float)hscale.FirstBig; d < wSize.Width; d += (float)hscale.BigStep)
+				for (var d = (float)hscale.FirstBig; d < wSize.Width; d += (float)hscale.BigStep)
 					g.DrawLine(pen, d, 0, d, (float)h2);
 
-				for (float d = (float)hscale.FirstBig; d < wSize.Width; d += (float)hscale.BigStep)
+				for (var d = (float)hscale.FirstBig; d < wSize.Width; d += (float)hscale.BigStep)
 					DrawString(g, zoom, (decimal)d, (decimal)h3, d.ToString(format), false, false, !right, !top, ColorScheme.PreviewRuler);
 
 				//scala verticale
 
-				Tools.RulerStepCalculator vscale = new Tools.RulerStepCalculator(-wSize.Height, wSize.Height, (int)(2 * s.Height / 100));
-				double v1 = (right ? -4.0 : 4.0) / zoom;
-				double v2 = 1.8 * v1;
-				double v3 = (right ? 2.5 : 0) / zoom;
+				var vscale = new Tools.RulerStepCalculator(-wSize.Height, wSize.Height, (int)(2 * s.Height / 100));
+				var v1 = (right ? -4.0 : 4.0) / zoom;
+				var v2 = 1.8 * v1;
+				var v3 = (right ? 2.5 : 0) / zoom;
 
-				for (float d = (float)vscale.FirstSmall; d < wSize.Height; d += (float)vscale.SmallStep)
+				for (var d = (float)vscale.FirstSmall; d < wSize.Height; d += (float)vscale.SmallStep)
 					g.DrawLine(pen, 0, d, (float)v1, d);
 
-				for (float d = (float)vscale.FirstBig; d < wSize.Height; d += (float)vscale.BigStep)
+				for (var d = (float)vscale.FirstBig; d < wSize.Height; d += (float)vscale.BigStep)
 					g.DrawLine(pen, 0, d, (float)v2, d);
 
-				for (float d = (float)vscale.FirstBig; d < wSize.Height; d += (float)vscale.BigStep)
+				for (var d = (float)vscale.FirstBig; d < wSize.Height; d += (float)vscale.BigStep)
 					DrawString(g, zoom, (decimal)v3, (decimal)d, d.ToString(format), false, false, right, !top, ColorScheme.PreviewRuler, -90);
 			}
 		}
@@ -1225,16 +1249,16 @@ namespace LaserGRBL
 
 		private static void DrawString(Graphics g, float zoom, decimal curX, decimal curY, string text, bool centerX, bool centerY, bool subtractX, bool subtractY, Color color, float rotation = 0)
 		{
-			GraphicsState state = g.Save();
+			var state = g.Save();
 			g.ScaleTransform(1.0f, -1.0f);
 
 
-			using (Font f = new Font(FontFamily.GenericMonospace, 8 * 1 / zoom))
+			using (var f = new Font(FontFamily.GenericMonospace, 8 * 1 / zoom))
 			{
 				float offsetX = 0;
 				float offsetY = 0;
 
-				SizeF ms = g.MeasureString(text, f);
+				var ms = g.MeasureString(text, f);
 
 				if (centerX)
 					offsetX = ms.Width / 2;
@@ -1248,7 +1272,7 @@ namespace LaserGRBL
 				if (subtractY)
 					offsetY += rotation == 0 ? ms.Height : -ms.Width;
 
-				using (Brush b = GetBrush(color))
+				using (var b = GetBrush(color))
 				{ DrawRotatedTextAt(g, rotation, text, f, b, (float)curX - offsetX, (float)-curY - offsetY); }
 
 			}
@@ -1257,7 +1281,7 @@ namespace LaserGRBL
 
 		private static void DrawRotatedTextAt(Graphics g, float a, string text, Font f, Brush b, float x, float y)
 		{
-			GraphicsState state = g.Save(); // Save the graphics state.
+			var state = g.Save(); // Save the graphics state.
 			g.TranslateTransform(x, y);     //posiziona
 			g.RotateTransform(a);           //ruota
 			g.DrawString(text, f, b, 0, 0); // scrivi a zero, zero
