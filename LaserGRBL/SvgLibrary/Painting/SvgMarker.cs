@@ -90,9 +90,7 @@ namespace Svg
         public override System.Drawing.Drawing2D.GraphicsPath Path(ISvgRenderer renderer)
         {
             var path = this.Children.FirstOrDefault(x => x is SvgVisualElement);
-            if (path != null)
-                return (path as SvgVisualElement).Path(renderer);
-            return null;
+            return (path as SvgVisualElement)?.Path(renderer);
         }
 
         public override System.Drawing.RectangleF Bounds

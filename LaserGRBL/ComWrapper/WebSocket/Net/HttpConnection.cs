@@ -450,8 +450,9 @@ namespace WebSocketSharp.Net
             return;
           }
         }
-        else if (_outputStream != null) {
-          _outputStream.Close (true);
+        else
+        {
+            _outputStream?.Close (true);
         }
 
         close ();

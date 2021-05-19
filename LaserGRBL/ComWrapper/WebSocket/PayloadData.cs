@@ -75,7 +75,7 @@ namespace WebSocketSharp
     static PayloadData ()
     {
       Empty = new PayloadData ();
-      MaxLength = Int64.MaxValue;
+      MaxLength = long.MaxValue;
     }
 
     #endregion
@@ -85,7 +85,7 @@ namespace WebSocketSharp
     internal PayloadData ()
     {
       _code = 1005;
-      _reason = String.Empty;
+      _reason = string.Empty;
 
       _data = WebSocket.EmptyBytes;
 
@@ -107,7 +107,7 @@ namespace WebSocketSharp
     internal PayloadData (ushort code, string reason)
     {
       _code = code;
-      _reason = reason ?? String.Empty;
+      _reason = reason ?? string.Empty;
 
       _data = code.Append (reason);
       _length = _data.LongLength;
@@ -155,7 +155,7 @@ namespace WebSocketSharp
         if (!_reasonSet) {
           _reason = _length > 2
                     ? _data.SubArray (2, _length - 2).UTF8Decode ()
-                    : String.Empty;
+                    : string.Empty;
 
           _reasonSet = true;
         }

@@ -23,11 +23,11 @@ namespace CsPotrace
         /// Exports a figure, created by Potrace from a Bitmap to a svg-formatted string
         /// </summary>
         /// <param name="list">Arraylist, which contains vectorinformations about the Curves</param>
-        /// <param name="Width">Width of the exportd cvg-File</param>
-        /// <param name="Height">Height of the exportd cvg-File</param>
+        /// <param name="oX">Width of the exported cvg-File</param>
+        /// <param name="oY">Height of the exported cvg-File</param>
         /// <returns></returns>
-        public static List<string> Export2GCode(List<List<Curve>> list, float oX, float oY, double scale, string lOn,
-            string lOff, Size originalImageSize, string skipcmd)
+        public static List<string> Export2GCode(List<List<Curve>> list, float oX, float oY, double scale, string laserOnCode,
+            string laserOffCode, Size originalImageSize, string skipcmd)
         {
             bool debug = false;
 
@@ -42,7 +42,7 @@ namespace CsPotrace
                 g.Clear(Color.White);
             }
 
-            var rv = list.SelectMany(curves => GetPathGC(curves, lOn, lOff, oX * scale, oY * scale, scale, g, skipcmd))
+            var rv = list.SelectMany(curves => GetPathGC(curves, laserOnCode, laserOffCode, oX * scale, oY * scale, scale, g, skipcmd))
                 .ToList();
 
             if (debug)
@@ -87,13 +87,10 @@ namespace CsPotrace
             if (Curve.Kind == CurveKind.Line)
             {
                 //trace line
-                if (g != null)
-                {
-                    g.DrawLine(Pens.DarkGray, (float) Curve.A.X, (float) Curve.A.Y, (float) Curve.B.X,
-                        (float) Curve.B.Y);
-                }
+                g?.DrawLine(Pens.DarkGray, (float) Curve.A.X, (float) Curve.A.Y, (float) Curve.B.X,
+                    (float) Curve.B.Y);
 
-                rv.Add($"G1 X{Formatnumber(Curve.B.X + oX, scale)} Y{Formatnumber(Curve.B.Y + oY, scale)}{onCode}");
+                rv.Add($"G1 X{FormatNumber(Curve.B.X + oX, scale)} Y{FormatNumber(Curve.B.Y + oY, scale)}{onCode}");
             }
 
             if (Curve.Kind == CurveKind.Bezier)
@@ -103,12 +100,11 @@ namespace CsPotrace
                     new Vector2((float) Curve.ControlPointB.X, (float) Curve.ControlPointB.Y),
                     new Vector2((float) Curve.B.X, (float) Curve.B.Y));
 
-                if (g != null)
-                    g.DrawBezier(Pens.Green,
-                        AsPointF(cb.P1),
-                        AsPointF(cb.C1),
-                        AsPointF(cb.C2),
-                        AsPointF(cb.P2));
+                g?.DrawBezier(Pens.Green,
+                    AsPointF(cb.P1),
+                    AsPointF(cb.C1),
+                    AsPointF(cb.C2),
+                    AsPointF(cb.P2));
 
                 try
                 {
@@ -130,19 +126,19 @@ namespace CsPotrace
                     }
                     else //same as exception
                     {
-                        if (g != null)
-                            g.DrawLine(Pens.DarkGray, (float) Curve.A.X, (float) Curve.A.Y, (float) Curve.B.X,
-                                (float) Curve.B.Y);
+                        g?.DrawLine(Pens.DarkGray, (float) Curve.A.X, (float) Curve.A.Y, (float) Curve.B.X,
+                            (float) Curve.B.Y);
+
                         rv.Add(
-                            $"G1 X{Formatnumber(Curve.B.X + oX, scale)} Y{Formatnumber(Curve.B.Y + oY, scale)}{onCode}");
+                            $"G1 X{FormatNumber(Curve.B.X + oX, scale)} Y{FormatNumber(Curve.B.Y + oY, scale)}{onCode}");
                     }
                 }
                 catch
                 {
-                    if (g != null)
-                        g.DrawLine(Pens.DarkGray, (float) Curve.A.X, (float) Curve.A.Y, (float) Curve.B.X,
-                            (float) Curve.B.Y);
-                    rv.Add($"G1 X{Formatnumber(Curve.B.X + oX, scale)} Y{Formatnumber(Curve.B.Y + oY, scale)}{onCode}");
+                    g?.DrawLine(Pens.DarkGray, (float) Curve.A.X, (float) Curve.A.Y, (float) Curve.B.X,
+                        (float) Curve.B.Y);
+
+                    rv.Add($"G1 X{FormatNumber(Curve.B.X + oX, scale)} Y{FormatNumber(Curve.B.Y + oY, scale)}{onCode}");
                 }
             }
         }
@@ -154,17 +150,17 @@ namespace CsPotrace
             {
                 //fast go to position
                 rv.Add(
-                    $"{skipcmd} X{Formatnumber(Curves[0].A.X + oX, scale)} Y{Formatnumber(Curves[0].A.Y + oY, scale)} {lOff}");
+                    $"{skipcmd} X{FormatNumber(Curves[0].A.X + oX, scale)} Y{FormatNumber(Curves[0].A.Y + oY, scale)} {lOff}");
                 //turn on laser
                 //rv.Add(lOn);
             }
         }
 
-        private static void OnPathEnd(List<Curve> Curves, string lOff, double oX, double oY, double scale,
+        private static void OnPathEnd(List<Curve> curves, string lOff, double oX, double oY, double scale,
             List<string> rv)
         {
             //turn off laser
-            if (Curves.Count > 0)
+            if (curves.Count > 0)
             {
                 //rv.Add(lOff);
             }
@@ -177,25 +173,19 @@ namespace CsPotrace
 
             if (arc.LinearLength > 2) //if not a small arc
             {
-                if (g != null)
-                {
-                    g.DrawArc(Pens.Red, arc.C.X - arc.r, arc.C.Y - arc.r, 2 * arc.r, 2 * arc.r,
-                        arc.startAngle * 180.0f / (float) Math.PI, arc.sweepAngle * 180.0f / (float) Math.PI);
-                }
+                g?.DrawArc(Pens.Red, arc.C.X - arc.r, arc.C.Y - arc.r, 2 * arc.r, 2 * arc.r,
+                    arc.startAngle * 180.0f / (float) Math.PI, arc.sweepAngle * 180.0f / (float) Math.PI);
 
                 return
-                    $"G{(!arc.IsClockwise ? 2 : 3)} X{Formatnumber(arc.P2.X + oX, scale)} Y{Formatnumber(arc.P2.Y + oY, scale)} I{Formatnumber(arc.C.X - arc.P1.X, scale)} J{Formatnumber(arc.C.Y - arc.P1.Y, scale)}";
+                    $"G{(!arc.IsClockwise ? 2 : 3)} X{FormatNumber(arc.P2.X + oX, scale)} Y{FormatNumber(arc.P2.Y + oY, scale)} I{FormatNumber(arc.C.X - arc.P1.X, scale)} J{FormatNumber(arc.C.Y - arc.P1.Y, scale)}";
             }
 
-            if (g != null)
-            {
-                g.DrawLine(Pens.DarkGray, arc.P1.X, arc.P1.Y, arc.P2.X, arc.P2.Y);
-            }
+            g?.DrawLine(Pens.DarkGray, arc.P1.X, arc.P1.Y, arc.P2.X, arc.P2.Y);
 
-            return $"G1 X{Formatnumber(arc.P2.X + oX, scale)} Y{Formatnumber(arc.P2.Y + oY, scale)}";
+            return $"G1 X{FormatNumber(arc.P2.X + oX, scale)} Y{FormatNumber(arc.P2.Y + oY, scale)}";
         }
 
-        private static string Formatnumber(double number, double scale)
+        private static string FormatNumber(double number, double scale)
         {
             double num = number / scale;
             return !double.IsNaN(num) ? num.ToString("0.###", CultureInfo.InvariantCulture) : "0";

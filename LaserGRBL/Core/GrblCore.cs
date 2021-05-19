@@ -136,14 +136,14 @@ namespace LaserGRBL
 
 			public static bool operator <(GrblVersionInfo a, GrblVersionInfo b)
 			{
-				if ((Object)a == null)
+				if ((object)a == null)
 					throw new ArgumentNullException("a");
 				return (a.CompareTo(b) < 0);
 			}
 
 			public static bool operator <=(GrblVersionInfo a, GrblVersionInfo b)
 			{
-				if ((Object)a == null)
+				if ((object)a == null)
 					throw new ArgumentNullException("a");
 				return (a.CompareTo(b) <= 0);
 			}
@@ -180,7 +180,7 @@ namespace LaserGRBL
 				}
 			}
 
-			public int CompareTo(Object version)
+			public int CompareTo(object version)
 			{
 				if (version == null)
 					return 1;
@@ -382,10 +382,7 @@ namespace LaserGRBL
 
 		internal string ValidateConfig(int parid, object value)
 		{
-			if (Configuration == null)
-				return null;
-
-			return Configuration.ValidateConfig(parid, value);
+            return Configuration?.ValidateConfig(parid, value);
 		}
 
 		public virtual Firmware Type
@@ -535,9 +532,8 @@ namespace LaserGRBL
 		{
 			mTP.Reset();
 
-			if (OnFileLoaded != null)
-				OnFileLoaded(elapsed, filename);
-		}
+            OnFileLoaded?.Invoke(elapsed, filename);
+        }
 
 		public GrblFile LoadedFile
 		{ get { return file; } }
@@ -1004,7 +1000,7 @@ namespace LaserGRBL
 					GPoint pos = homing ? GPoint.Zero : MachinePosition;
 					GPoint wco = mTP.LastKnownWCO;
 					GPoint cur = pos - wco;
-					mQueue.Enqueue(new GrblCommand(String.Format("G92 X{0} Y{1} Z{2}", cur.X.ToString(CultureInfo.InvariantCulture), cur.Y.ToString(CultureInfo.InvariantCulture), cur.Z.ToString(CultureInfo.InvariantCulture))));
+					mQueue.Enqueue(new GrblCommand(string.Format("G92 X{0} Y{1} Z{2}", cur.X.ToString(CultureInfo.InvariantCulture), cur.Y.ToString(CultureInfo.InvariantCulture), cur.Z.ToString(CultureInfo.InvariantCulture))));
 				}
 
 				for (int i = 0; i < position && i < file.Count; i++) //analizza fino alla posizione
@@ -2220,7 +2216,9 @@ namespace LaserGRBL
 		{ get { return IsConnected && !InProgram && (MachineStatus == MacStatus.Idle || MachineStatus == MacStatus.Alarm); } }
 
 		public decimal LoopCount
-		{ get { return mLoopCount; } set { mLoopCount = value; if (OnLoopCountChange != null) OnLoopCountChange(mLoopCount); } }
+		{ get { return mLoopCount; } set { mLoopCount = value;
+            OnLoopCountChange?.Invoke(mLoopCount);
+        } }
 
 		private ThreadingMode CurrentThreadingMode
 		{ get { return Settings.GetObject("Threading Mode", ThreadingMode.UltraFast); } }
@@ -2472,7 +2470,7 @@ namespace LaserGRBL
 				decimal jogstep = JogStep;
 				decimal jogspeed = JogSpeed;
 
-				String text = m.Value.Substring(1, m.Value.Length - 2);
+				string text = m.Value.Substring(1, m.Value.Length - 2);
 				Expression exp = new Expression(text);
 
 				exp.AddSetVariable("left", (double)left);

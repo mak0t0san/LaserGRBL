@@ -504,7 +504,7 @@ namespace WebSocketSharp.Net
 
       if (lower == "content-length") {
         long len;
-        if (Int64.TryParse (val, out len) && len >= 0) {
+        if (long.TryParse (val, out len) && len >= 0) {
           _contentLength = len;
           _contentLengthSet = true;
         }
@@ -552,7 +552,7 @@ namespace WebSocketSharp.Net
       if (_version > HttpVersion.Version10 && enc != null && enc.Length > 0) {
         _chunked = enc.ToLower () == "chunked";
         if (!_chunked) {
-          _context.ErrorMessage = String.Empty;
+          _context.ErrorMessage = string.Empty;
           _context.ErrorStatus = 501;
 
           return;
@@ -562,7 +562,7 @@ namespace WebSocketSharp.Net
       if (!_chunked && !_contentLengthSet) {
         var method = _method.ToLower ();
         if (method == "post" || method == "put") {
-          _context.ErrorMessage = String.Empty;
+          _context.ErrorMessage = string.Empty;
           _context.ErrorStatus = 411;
 
           return;

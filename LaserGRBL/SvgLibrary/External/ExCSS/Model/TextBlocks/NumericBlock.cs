@@ -13,9 +13,9 @@ namespace ExCSS.Model.TextBlocks
             GrammarSegment = GrammarSegment.Number;
         }
 
-        public Single Value
+        public float Value
         {
-            get { return Single.Parse(_data, CultureInfo.InvariantCulture); }
+            get { return float.Parse(_data, CultureInfo.InvariantCulture); }
         }
         
         public override string ToString()

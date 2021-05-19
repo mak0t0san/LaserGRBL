@@ -93,8 +93,7 @@ namespace Svg
                 var newID = this.EnsureValidId(element.ID, autoForceUniqueID);
                 if (autoForceUniqueID && newID != element.ID)
                 {
-                    if(logElementOldIDNewID != null)
-                        logElementOldIDNewID(element, element.ID, newID);
+                    logElementOldIDNewID?.Invoke(element, element.ID, newID);
                     element.ForceUniqueID(newID);
                     result = true;
                 }
@@ -186,19 +185,13 @@ namespace Svg
         protected void OnAdded(SvgElement element)
         {
         	var handler = ElementAdded;
-        	if(handler != null)
-        	{
-        		handler(this._document, new SvgElementEventArgs{ Element = element });
-        	}
+            handler?.Invoke(this._document, new SvgElementEventArgs{ Element = element });
         }
         
         protected void OnRemoved(SvgElement element)
         {
         	var handler = ElementRemoved;
-        	if(handler != null)
-        	{
-        		handler(this._document, new SvgElementEventArgs{ Element = element });
-        	}
+            handler?.Invoke(this._document, new SvgElementEventArgs{ Element = element });
         }
         
     }

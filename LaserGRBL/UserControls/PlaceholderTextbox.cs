@@ -194,10 +194,8 @@ namespace LaserGRBL.UserControls
 		{
 			base.OnInvalidated(e);
 			//Check if there is a watermark
-			if (waterMarkContainer != null)
-				//if there is a watermark it should also be invalidated();
-				waterMarkContainer.Invalidate();
-		}
+            waterMarkContainer?.Invalidate();
+        }
 
 		#endregion
 

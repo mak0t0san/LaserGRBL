@@ -43,11 +43,10 @@ namespace LaserGRBL.UserControls
 				mCommandHistory.Add(cmd);
 				Clear();
 				mHistoryIndex = mCommandHistory.Count;
-				
-				if (CommandEntered != null)
-					CommandEntered(cmd);
 
-				return true;
+                CommandEntered?.Invoke(cmd);
+
+                return true;
 			}
 			
 			if (keyData == Keys.Up)

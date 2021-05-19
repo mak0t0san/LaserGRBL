@@ -165,11 +165,9 @@ namespace WebSocketSharp.Net
           return;
 
         _completed = true;
-        if (_waitHandle != null)
-          _waitHandle.Set ();
+        _waitHandle?.Set ();
 
-        if (_callback != null)
-          _callback.BeginInvoke (this, ar => _callback.EndInvoke (ar), null);
+        _callback?.BeginInvoke (this, ar => _callback.EndInvoke (ar), null);
       }
     }
 

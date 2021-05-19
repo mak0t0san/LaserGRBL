@@ -50,7 +50,7 @@ namespace LaserGRBL.PSHelper
 			{  
 				try
 				{
-					e.Value = Int32.Parse(StripNonNumber(e.Value.ToString()));
+					e.Value = int.Parse(StripNonNumber(e.Value.ToString()));
 					e.ParsingApplied = true;
 				}
 				catch (FormatException)

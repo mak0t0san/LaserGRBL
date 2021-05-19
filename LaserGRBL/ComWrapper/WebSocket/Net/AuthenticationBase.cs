@@ -121,7 +121,7 @@ namespace WebSocketSharp.Net
                   ? param.Trim ().Trim ('"')
                   : i < param.Length - 1
                     ? param.Substring (i + 1).Trim ().Trim ('"')
-                    : String.Empty;
+                    : string.Empty;
 
         res.Add (name, val);
       }
@@ -143,7 +143,7 @@ namespace WebSocketSharp.Net
              ? ToBasicString ()
              : _scheme == AuthenticationSchemes.Digest
                ? ToDigestString ()
-               : String.Empty;
+               : string.Empty;
     }
 
     #endregion

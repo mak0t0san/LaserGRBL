@@ -837,8 +837,8 @@ namespace LaserGRBL.UserControls
             if (e.Button == MouseButtons.Left)
             {
                 Capture = true;
-                if (Scroll != null) Scroll(this, new ScrollEventArgs(ScrollEventType.ThumbTrack, trackerValue));
-				RiseChanged();
+                Scroll?.Invoke(this, new ScrollEventArgs(ScrollEventType.ThumbTrack, trackerValue));
+                RiseChanged();
                 OnMouseMove(e);
             }
         }
@@ -877,8 +877,8 @@ namespace LaserGRBL.UserControls
                     set = ScrollEventType.Last;
                 }
 
-                if (Scroll != null) Scroll(this, new ScrollEventArgs(set, trackerValue));
-				RiseChanged();
+                Scroll?.Invoke(this, new ScrollEventArgs(set, trackerValue));
+                RiseChanged();
             }
             Invalidate();
         }
@@ -892,8 +892,8 @@ namespace LaserGRBL.UserControls
             base.OnMouseUp(e);
             Capture = false;
             mouseInThumbRegion = IsPointInRect(e.Location, thumbRect);
-            if (Scroll != null) Scroll(this, new ScrollEventArgs(ScrollEventType.EndScroll, trackerValue));
-			RiseChanged();
+            Scroll?.Invoke(this, new ScrollEventArgs(ScrollEventType.EndScroll, trackerValue));
+            RiseChanged();
             Invalidate();
         }
 
@@ -940,12 +940,12 @@ namespace LaserGRBL.UserControls
                 case Keys.Down:
                 case Keys.Left:
                     SetProperValue(Value - (int)smallChange);
-                    if (Scroll != null) Scroll(this, new ScrollEventArgs(ScrollEventType.SmallDecrement, Value));
+                    Scroll?.Invoke(this, new ScrollEventArgs(ScrollEventType.SmallDecrement, Value));
                     break;
                 case Keys.Up:
                 case Keys.Right:
                     SetProperValue(Value + (int)smallChange);
-                    if (Scroll != null) Scroll(this, new ScrollEventArgs(ScrollEventType.SmallIncrement, Value));
+                    Scroll?.Invoke(this, new ScrollEventArgs(ScrollEventType.SmallIncrement, Value));
                     break;
                 case Keys.Home:
                     Value = barMinimum;
@@ -955,11 +955,11 @@ namespace LaserGRBL.UserControls
                     break;
                 case Keys.PageDown:
                     SetProperValue(Value - (int)largeChange);
-                    if (Scroll != null) Scroll(this, new ScrollEventArgs(ScrollEventType.LargeDecrement, Value));
+                    Scroll?.Invoke(this, new ScrollEventArgs(ScrollEventType.LargeDecrement, Value));
                     break;
                 case Keys.PageUp:
                     SetProperValue(Value + (int)largeChange);
-                    if (Scroll != null) Scroll(this, new ScrollEventArgs(ScrollEventType.LargeIncrement, Value));
+                    Scroll?.Invoke(this, new ScrollEventArgs(ScrollEventType.LargeIncrement, Value));
                     break;
             }
             if (Scroll != null && Value == barMinimum) Scroll(this, new ScrollEventArgs(ScrollEventType.First, Value));
@@ -1082,8 +1082,7 @@ namespace LaserGRBL.UserControls
 				TT.SetToolTip(this, tooltip);
 
 
-			if (ValueChanged != null)
-				ValueChanged(this, new EventArgs());
-		}
+            ValueChanged?.Invoke(this, new EventArgs());
+        }
     }
 }

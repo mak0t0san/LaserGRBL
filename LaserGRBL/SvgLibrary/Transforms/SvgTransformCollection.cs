@@ -93,11 +93,8 @@ namespace Svg.Transforms
         protected void OnTransformChanged()
         {
         	var handler = TransformChanged;
-        	if(handler != null)
-        	{
-        		//make a copy of the current value to avoid collection changed exceptions
-        		handler(this, new AttributeEventArgs { Attribute = "transform", Value = this.Clone() });
-        	}
+            //make a copy of the current value to avoid collection changed exceptions
+            handler?.Invoke(this, new AttributeEventArgs { Attribute = "transform", Value = this.Clone() });
         }	
     	
 		public object Clone()

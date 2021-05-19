@@ -148,7 +148,7 @@ namespace WebSocketSharp.Net
     {
       using (_body) {
         var len = _body.Length;
-        if (len > Int32.MaxValue) {
+        if (len > int.MaxValue) {
           _body.Position = 0;
           var buffLen = 1024;
           var buff = new byte[buffLen];
@@ -186,7 +186,7 @@ namespace WebSocketSharp.Net
 
     private static byte[] getChunkSizeBytes (int size, bool final)
     {
-      return Encoding.ASCII.GetBytes (String.Format ("{0:x}\r\n{1}", size, final ? "\r\n" : ""));
+      return Encoding.ASCII.GetBytes (string.Format ("{0:x}\r\n{1}", size, final ? "\r\n" : ""));
     }
 
     private void writeChunked (byte[] buffer, int offset, int count)

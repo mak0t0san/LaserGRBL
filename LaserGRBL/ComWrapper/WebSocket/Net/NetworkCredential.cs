@@ -139,7 +139,7 @@ namespace WebSocketSharp.Net
     /// </value>
     public string Domain {
       get {
-        return _domain ?? String.Empty;
+        return _domain ?? string.Empty;
       }
 
       internal set {
@@ -159,7 +159,7 @@ namespace WebSocketSharp.Net
     /// </value>
     public string Password {
       get {
-        return _password ?? String.Empty;
+        return _password ?? string.Empty;
       }
 
       internal set {

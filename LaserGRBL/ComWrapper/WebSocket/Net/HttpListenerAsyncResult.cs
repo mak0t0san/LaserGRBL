@@ -139,8 +139,7 @@ namespace WebSocketSharp.Net
         asyncResult._completed = true;
 
         var waitHandle = asyncResult._waitHandle;
-        if (waitHandle != null)
-          waitHandle.Set ();
+        waitHandle?.Set ();
       }
 
       var callback = asyncResult._callback;

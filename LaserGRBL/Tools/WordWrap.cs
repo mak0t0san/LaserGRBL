@@ -52,7 +52,7 @@ namespace Tools
 		                // Trim whitespace following break
 		                pos += len;
 		
-		                while ( pos < eol && Char.IsWhiteSpace( the_string[pos] ) )
+		                while ( pos < eol && char.IsWhiteSpace( the_string[pos] ) )
 		                    pos++;
 		
 		            } while ( eol > pos );
@@ -74,12 +74,12 @@ namespace Tools
 		{
 		  // Find last whitespace in line
 		  int i = max - 1;
-		  while (i >= 0 && !Char.IsWhiteSpace(text[pos + i]))
+		  while (i >= 0 && !char.IsWhiteSpace(text[pos + i]))
 		    i--;
 		  if (i < 0)
 		    return max; // No whitespace found; break at maximum length
 		  // Find start of whitespace
-		  while (i >= 0 && Char.IsWhiteSpace(text[pos + i]))
+		  while (i >= 0 && char.IsWhiteSpace(text[pos + i]))
 		    i--;
 		  // Return length of text before whitespace
 		  return i + 1;

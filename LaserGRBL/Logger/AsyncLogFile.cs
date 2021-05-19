@@ -54,7 +54,7 @@ namespace LaserGRBL
 					}
 					else if (maxline != uint.MaxValue) //dobbiamo trimmare al numero di linee richiesto
 					{
-						String tmp = System.IO.Path.GetTempFileName();
+						string tmp = System.IO.Path.GetTempFileName();
 						bool written = false;
 
 						using (System.IO.StreamReader reader = new System.IO.StreamReader(new System.IO.FileStream(mFilename, System.IO.FileMode.Open, System.IO.FileAccess.Read, System.IO.FileShare.None)))

@@ -109,7 +109,9 @@ namespace Tools
 				{
 					err = ex;
 					try
-					{ if ((FinalStream != null))FinalStream.Close(); }
+                    {
+                        FinalStream?.Close();
+                    }
 					catch { }
 					try { ManageWriteError(ObjectToSave, filename, ex); }
 					catch { }
@@ -228,9 +230,8 @@ namespace Tools
 						}
 						else
 						{
-							if ((FinalStream != null))
-								FinalStream.Close();
-							rv = ManageOldVersion(RVersion, filename, Password);
+                            FinalStream?.Close();
+                            rv = ManageOldVersion(RVersion, filename, Password);
 						}
 
 					}
@@ -240,10 +241,9 @@ namespace Tools
 						System.Diagnostics.Debug.WriteLine(string.Format("Serialization exception in {0} Position {1}", filename, FinalStream.Position));
 
 						try
-						{
-							if ((FinalStream != null))
-								FinalStream.Close();
-						}
+                        {
+                            FinalStream?.Close();
+                        }
 						catch
 						{
 						}
@@ -478,10 +478,9 @@ namespace Tools
 			finally
 			{
 				try
-				{
-					if ((Log != null))
-						Log.Close();
-				}
+                {
+                    Log?.Close();
+                }
 				catch
 				{
 				}
@@ -522,10 +521,9 @@ namespace Tools
 			finally
 			{
 				try
-				{
-					if ((Log != null))
-						Log.Close();
-				}
+                {
+                    Log?.Close();
+                }
 				catch
 				{
 				}
@@ -588,10 +586,9 @@ namespace Tools
 			finally
 			{
 				try
-				{
-					if ((Log != null))
-						Log.Close();
-				}
+                {
+                    Log?.Close();
+                }
 				catch
 				{
 				}

@@ -24,18 +24,14 @@ namespace Tools
 		}
 
 		protected override void OnFirstRun()
-		{
-			if ((_firsrunsub != null)) {
-				_firsrunsub();
-			}
-		}
+        {
+            _firsrunsub?.Invoke();
+        }
 
 		protected override void DoTheWork()
-		{
-			if ((_delegatesub != null)) {
-				_delegatesub();
-			}
-		}
+        {
+            _delegatesub?.Invoke();
+        }
 
 	}
 
@@ -119,10 +115,9 @@ namespace Tools
 		{
 			if (TH != null && TH.ThreadState != System.Threading.ThreadState.Stopped)
 			{
-				if (MustExit != null)
-					MustExit.Set();
+                MustExit?.Set();
 
-				if (!object.ReferenceEquals(System.Threading.Thread.CurrentThread, TH))
+                if (!object.ReferenceEquals(System.Threading.Thread.CurrentThread, TH))
 				{
 					if (TH != null && StopWaitTimeout > 0)
 						TH.Join(StopWaitTimeout);

@@ -96,9 +96,9 @@ namespace LaserGRBL.UserControls
 		private void RefreshText()
 		{
 			if (fun == 0)
-				Lbl.Text = String.Format("{0} [{1:0.00}x]", _basetext, (TB.Value == 0 ? 25 : TB.Value == 1 ? 50 : 100) / 100.0);
+				Lbl.Text = string.Format("{0} [{1:0.00}x]", _basetext, (TB.Value == 0 ? 25 : TB.Value == 1 ? 50 : 100) / 100.0);
 			else
-				Lbl.Text = String.Format("{0} [{1:0.00}x]", _basetext, TB.Value / 100.0);
+				Lbl.Text = string.Format("{0} [{1:0.00}x]", _basetext, TB.Value / 100.0);
 		}
 
 		private void TB_MouseUp(object sender, MouseEventArgs e)

@@ -65,8 +65,8 @@ namespace CsPotrace
 			{
 				if (pg.Count == 2)
 				{
-					dPoint a = new dPoint(pg[0].X / resolution, pg[0].Y / resolution);
-					dPoint b = new dPoint(pg[1].X / resolution, pg[1].Y / resolution);
+					DPoint a = new DPoint(pg[0].X / resolution, pg[0].Y / resolution);
+					DPoint b = new DPoint(pg[1].X / resolution, pg[1].Y / resolution);
 					flist.Add(new List<Curve>() { new Curve(CurveKind.Line, a, a, b, b) });
 				}
 				else
@@ -74,14 +74,14 @@ namespace CsPotrace
 					List<Curve> potcurve = new List<Curve>();
 					for (int i = 0; i < pg.Count - 1; i++)
 					{
-						dPoint a = new dPoint(pg[i].X / resolution, pg[i].Y / resolution);
-						dPoint b = new dPoint(pg[i + 1].X / resolution, pg[i + 1].Y / resolution);
+						DPoint a = new DPoint(pg[i].X / resolution, pg[i].Y / resolution);
+						DPoint b = new DPoint(pg[i + 1].X / resolution, pg[i + 1].Y / resolution);
 						potcurve.Add(new Curve(CurveKind.Line, a, a, b, b));
 					}
 					if (close)
 					{
-						dPoint a = new dPoint(pg[pg.Count-1].X / resolution, pg[pg.Count - 1].Y / resolution);
-						dPoint b = new dPoint(pg[0].X / resolution, pg[0].Y / resolution);
+						DPoint a = new DPoint(pg[pg.Count-1].X / resolution, pg[pg.Count - 1].Y / resolution);
+						DPoint b = new DPoint(pg[0].X / resolution, pg[0].Y / resolution);
 						potcurve.Add(new Curve(CurveKind.Line, a, a, b, b));
 					}
 

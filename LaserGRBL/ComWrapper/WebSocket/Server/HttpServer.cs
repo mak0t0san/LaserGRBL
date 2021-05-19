@@ -760,7 +760,7 @@ namespace WebSocketSharp.Server
 
       try {
         try {
-          _services.Stop (1006, String.Empty);
+          _services.Stop (1006, string.Empty);
         }
         finally {
           _listener.Abort ();
@@ -817,7 +817,7 @@ namespace WebSocketSharp.Server
     private static string convertToString (System.Net.IPAddress address)
     {
       return address.AddressFamily == AddressFamily.InterNetworkV6
-             ? String.Format ("[{0}]", address.ToString ())
+             ? string.Format ("[{0}]", address.ToString ())
              : address.ToString ();
     }
 
@@ -850,7 +850,7 @@ namespace WebSocketSharp.Server
       _secure = secure;
 
       var lsnr = new HttpListener ();
-      var pref = String.Format (
+      var pref = string.Format (
                    "http{0}://{1}:{2}/", secure ? "s" : "", _hostname, port
                  );
 
@@ -945,8 +945,7 @@ namespace WebSocketSharp.Server
           _log.Fatal (ex.Message);
           _log.Debug (ex.ToString ());
 
-          if (ctx != null)
-            ctx.Connection.Close (true);
+          ctx?.Connection.Close (true);
 
           break;
         }
@@ -985,7 +984,7 @@ namespace WebSocketSharp.Server
           startReceiving ();
         }
         catch {
-          _services.Stop (1011, String.Empty);
+          _services.Stop (1011, string.Empty);
           throw;
         }
 
@@ -1453,7 +1452,7 @@ namespace WebSocketSharp.Server
     /// </remarks>
     public void Stop ()
     {
-      stop (1005, String.Empty);
+      stop (1005, string.Empty);
     }
 
     /// <summary>

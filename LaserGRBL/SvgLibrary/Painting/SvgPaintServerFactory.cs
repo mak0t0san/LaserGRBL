@@ -101,7 +101,7 @@ namespace Svg
             if (value is string)
             {
             	var s = (string) value;
-                if (String.Equals(s.Trim(), "none", StringComparison.OrdinalIgnoreCase) || string.IsNullOrEmpty(s) || s.Trim().Length < 1)
+                if (string.Equals(s.Trim(), "none", StringComparison.OrdinalIgnoreCase) || string.IsNullOrEmpty(s) || s.Trim().Length < 1)
             		return SvgPaintServer.None;
             	else
                 	return SvgPaintServerFactory.Create(s, (SvgDocument)context);

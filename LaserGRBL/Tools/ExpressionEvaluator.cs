@@ -374,10 +374,10 @@ namespace Tools
 				string checkMe = checkMeSpace.Replace(" ", string.Empty);
 
 				bool realValue = false;
-				double val = Double.NaN;
+				double val = double.NaN;
 				try
 				{
-					val = Double.Parse(checkMe, System.Globalization.CultureInfo.InvariantCulture);
+					val = double.Parse(checkMe, System.Globalization.CultureInfo.InvariantCulture);
 					realValue = true;
 				}
 				catch { }
@@ -1106,7 +1106,7 @@ namespace Tools
 			//assembly.Save("assem.dll");
 			//assembly.Save("x.exe");
 			//return (function)Activator.CreateInstance(dt, new Object[] { });
-			this.dynamicFunction = (DynamicFunction)Activator.CreateInstance(dt, new Object[] { });
+			this.dynamicFunction = (DynamicFunction)Activator.CreateInstance(dt, new object[] { });
 		}
 
 		protected void emitFunction(string function, ILGenerator ilGen)
@@ -1114,8 +1114,8 @@ namespace Tools
 			string[] splitFunction = function.Split(new char[] { ' ' });
 
 			// Set up two double variables.
-			ilGen.DeclareLocal(typeof(System.Double));
-			ilGen.DeclareLocal(typeof(System.Double));
+			ilGen.DeclareLocal(typeof(double));
+			ilGen.DeclareLocal(typeof(double));
 
 			foreach (string token in splitFunction)
 			{
@@ -1215,7 +1215,7 @@ namespace Tools
 						case "abs":
 							{
 								// Convert to postive.
-								Type[] absArgs = { typeof(System.Double) };
+								Type[] absArgs = { typeof(double) };
 								ilGen.EmitCall(OpCodes.Callvirt,
 									typeof(System.Math).GetMethod("Abs", absArgs),
 									null);

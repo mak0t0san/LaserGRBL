@@ -186,8 +186,8 @@ namespace WebSocketSharp.Net
         folderPath = _defaultCertFolderPath;
 
       try {
-        var cer = Path.Combine (folderPath, String.Format ("{0}.cer", port));
-        var key = Path.Combine (folderPath, String.Format ("{0}.key", port));
+        var cer = Path.Combine (folderPath, string.Format ("{0}.cer", port));
+        var key = Path.Combine (folderPath, string.Format ("{0}.key", port));
         if (File.Exists (cer) && File.Exists (key)) {
           var cert = new X509Certificate2 (cer);
           cert.PrivateKey = createRSAFromFile (key);
@@ -236,8 +236,7 @@ namespace WebSocketSharp.Net
         lsnr._socket.BeginAccept (onAccept, lsnr);
       }
       catch {
-        if (sock != null)
-          sock.Close ();
+          sock?.Close ();
 
         return;
       }
@@ -317,8 +316,8 @@ namespace WebSocketSharp.Net
       if (folderPath == null || folderPath.Length == 0)
         folderPath = _defaultCertFolderPath;
 
-      var cer = Path.Combine (folderPath, String.Format ("{0}.cer", port));
-      var key = Path.Combine (folderPath, String.Format ("{0}.key", port));
+      var cer = Path.Combine (folderPath, string.Format ("{0}.cer", port));
+      var key = Path.Combine (folderPath, string.Format ("{0}.key", port));
 
       return File.Exists (cer) && File.Exists (key);
     }
@@ -429,7 +428,7 @@ namespace WebSocketSharp.Net
         if (prefs.ContainsKey (prefix)) {
           if (prefs[prefix] != listener) {
             throw new HttpListenerException (
-              87, String.Format ("There's another listener for {0}.", prefix)
+              87, string.Format ("There's another listener for {0}.", prefix)
             );
           }
 

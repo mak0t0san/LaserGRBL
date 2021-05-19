@@ -251,12 +251,9 @@ namespace Svg
         			return this as SvgDocument;
         		}
         		else
-        		{
-        			if(this.Parent != null)
-        				return Parent.OwnerDocument;
-        			else
-        				return null;
-        		}
+                {
+                    return Parent?.OwnerDocument;
+                }
         	}
         }
 
@@ -395,17 +392,11 @@ namespace Svg
                 return;
             }
 
-            if (this.OwnerDocument != null)
-            {
-                this.OwnerDocument.IdManager.Remove(this);
-            }
+            OwnerDocument?.IdManager.Remove(this);
 
             this.Attributes["id"] = value;
 
-            if (this.OwnerDocument != null)
-            {
-                this.OwnerDocument.IdManager.AddAndForceUniqueID(this, null, autoForceUniqueID, logElementOldIDNewID);
-            }
+            OwnerDocument?.IdManager.AddAndForceUniqueID(this, null, autoForceUniqueID, logElementOldIDNewID);
         }
 
         /// <summary>
@@ -446,10 +437,7 @@ namespace Svg
             	sibling = Children[index + 1];
             }
             var handler = ChildAdded;
-            if(handler != null)
-            {
-            	handler(this, new ChildAddedEventArgs { NewChild = child, BeforeSibling = sibling });
-            }
+            handler?.Invoke(this, new ChildAddedEventArgs { NewChild = child, BeforeSibling = sibling });
         }
 
         /// <summary>
@@ -524,12 +512,12 @@ namespace Svg
         public virtual bool ShouldWriteElement()
         {
             //Write any element who has a name.
-            return (this.ElementName != String.Empty);
+            return (this.ElementName != string.Empty);
         }
 
         protected virtual void WriteStartElement(XmlTextWriter writer)
         {
-            if (this.ElementName != String.Empty)
+            if (this.ElementName != string.Empty)
             {
                 writer.WriteStartElement(this.ElementName);
             }
@@ -539,7 +527,7 @@ namespace Svg
 
         protected virtual void WriteEndElement(XmlTextWriter writer)
         {
-            if (this.ElementName != String.Empty)
+            if (this.ElementName != string.Empty)
             {
                 writer.WriteEndElement();
             }
@@ -693,7 +681,7 @@ namespace Svg
             else
             {
                 //write the content
-                if(!String.IsNullOrEmpty(this.Content))
+                if(!string.IsNullOrEmpty(this.Content))
                     writer.WriteString(this.Content);
 
                 //write all children
@@ -910,11 +898,8 @@ namespace Svg
 		protected void OnAttributeChanged(AttributeEventArgs args)
 		{
 			var handler = AttributeChanged;
-			if(handler != null)
-			{
-				handler(this, args);
-			}
-		}
+            handler?.Invoke(this, args);
+        }
 
 		/// <summary>
         /// Fired when an Atrribute of this Element has changed
@@ -924,11 +909,8 @@ namespace Svg
 		protected void OnContentChanged(ContentEventArgs args)
 		{
 			var handler = ContentChanged;
-			if(handler != null)
-			{
-				handler(this, args);
-			}
-		}
+            handler?.Invoke(this, args);
+        }
 
         #region graphical EVENTS
 
@@ -1021,59 +1003,41 @@ namespace Svg
         protected void RaiseMouseClick(object sender, MouseArg e)
         {
         	var handler = Click;
-        	if (handler != null)
-        	{
-        		handler(sender, e);
-            }
+            handler?.Invoke(sender, e);
         }
 
         //down
         protected void RaiseMouseDown(object sender, MouseArg e)
         {
         	var handler = MouseDown;
-            if (handler != null)
-            {
-                handler(sender, e);
-            }
+            handler?.Invoke(sender, e);
         }
 
         //up
         protected void RaiseMouseUp(object sender, MouseArg e)
         {
         	var handler = MouseUp;
-            if (handler != null)
-            {
-                handler(sender, e);
-            }
+            handler?.Invoke(sender, e);
         }
 
         protected void RaiseMouseMove(object sender, MouseArg e)
         {
         	var handler = MouseMove;
-            if (handler != null)
-            {
-                handler(sender, e);
-            }
+            handler?.Invoke(sender, e);
         }
         
         //over
         protected void RaiseMouseOver(object sender, MouseArg args)
         {
         	var handler = MouseOver;
-            if (handler != null)
-            {
-                handler(sender, args);
-            }
+            handler?.Invoke(sender, args);
         }
 
         //out
         protected void RaiseMouseOut(object sender, MouseArg args)
         {
         	var handler = MouseOut;
-            if (handler != null)
-            {
-                handler(sender, args);
-            }
+            handler?.Invoke(sender, args);
         }
         
         
@@ -1086,10 +1050,7 @@ namespace Svg
         protected void RaiseMouseScroll(object sender, MouseScrollArg e)
         {
         	var handler = MouseScroll;
-            if (handler != null)
-            {
-                handler(sender, e);
-            }
+            handler?.Invoke(sender, e);
         }
         
         #endregion graphical EVENTS

@@ -199,10 +199,7 @@ namespace ExCSS
             {
                 var container = _activeRuleSets.Peek() as ISupportsRuleSets;
 
-                if (container != null)
-                {
-                    container.RuleSets.Add(rule);
-                }
+                container?.RuleSets.Add(rule);
             }
             else
             {
@@ -217,10 +214,7 @@ namespace ExCSS
             _property = property;
             var rule = CurrentRule as ISupportsDeclarations;
 
-            if (rule != null)
-            {
-                rule.Declarations.Add(property);
-            }
+            rule?.Declarations.Add(property);
         }
 
         private T CastRuleSet<T>() where T : RuleSet

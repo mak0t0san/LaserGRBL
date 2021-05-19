@@ -73,7 +73,7 @@ namespace WebSocketSharp
     public string EntityBody {
       get {
         if (EntityBodyData == null || EntityBodyData.LongLength == 0)
-          return String.Empty;
+          return string.Empty;
 
         Encoding enc = null;
 
@@ -104,7 +104,7 @@ namespace WebSocketSharp
     private static byte[] readEntityBody (Stream stream, string length)
     {
       long len;
-      if (!Int64.TryParse (length, out len))
+      if (!long.TryParse (length, out len))
         throw new ArgumentException ("Cannot be parsed.", "length");
 
       if (len < 0)

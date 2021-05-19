@@ -110,7 +110,7 @@ namespace ExCSS.Model
                     ((PrimitiveTerm)cssValue).PrimitiveType == UnitType.Number);
         }
 
-        private static Single ToSingle(Term cssValue)
+        private static float ToSingle(Term cssValue)
         {
             var value = ((PrimitiveTerm)cssValue).GetFloatValue(UnitType.Number);
                 
@@ -119,7 +119,7 @@ namespace ExCSS.Model
                 : 0f;
         }
 
-        private static byte ToByte(Single? value)
+        private static byte ToByte(float? value)
         {
             if (value.HasValue)
             {

@@ -52,7 +52,7 @@ namespace WebSocketSharp.Net
     {
       var cnt = Count;
       if (cnt == 0)
-        return String.Empty;
+        return string.Empty;
 
       var output = new StringBuilder ();
       var keys = AllKeys;

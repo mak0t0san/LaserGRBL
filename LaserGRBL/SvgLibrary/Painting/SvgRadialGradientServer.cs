@@ -96,7 +96,7 @@ namespace Svg
             Radius = new SvgUnit(SvgUnitType.Percentage, 50F);
         }
 
-        private object _lockObj = new Object();
+        private object _lockObj = new object();
 
         private SvgUnit NormalizeUnit(SvgUnit orig)
         {

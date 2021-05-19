@@ -104,8 +104,7 @@ namespace Svg
                 var bounds = renderer.GetBoundable().Bounds;
                 if (bounds.Width <= 0 || bounds.Height <= 0 || ((points[0].X == points[1].X) && (points[0].Y == points[1].Y))) 
                 {
-                    if (this.GetCallback != null) return GetCallback().GetBrush(renderingElement, renderer, opacity, forStroke);
-                    return null;
+                    return GetCallback?.Invoke().GetBrush(renderingElement, renderer, opacity, forStroke);
                 }
 
                 using (var transform = EffectiveGradientTransform)

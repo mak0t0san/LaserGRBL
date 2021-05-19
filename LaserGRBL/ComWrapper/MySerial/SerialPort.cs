@@ -694,7 +694,7 @@ namespace MySerialPort
             try
             {
                 int n = stream.Read(bytes, 0, count);
-                return new String(encoding.GetChars(bytes, 0, n));
+                return new string(encoding.GetChars(bytes, 0, n));
             }
             catch (IOException)
             {
@@ -796,27 +796,24 @@ namespace MySerialPort
 			SerialErrorReceivedEventHandler handler =
 				(SerialErrorReceivedEventHandler) Events [error_received];
 
-			if (handler != null)
-				handler (this, args);
-		}
+            handler?.Invoke (this, args);
+        }
 
 		internal void OnDataReceived (SerialDataReceivedEventArgs args)
 		{
 			SerialDataReceivedEventHandler handler =
 				(SerialDataReceivedEventHandler) Events [data_received];
 
-			if (handler != null)
-				handler (this, args);
-		}
+            handler?.Invoke (this, args);
+        }
 		
 		internal void OnDataReceived (SerialPinChangedEventArgs args)
 		{
 			SerialPinChangedEventHandler handler =
 				(SerialPinChangedEventHandler) Events [pin_changed];
 
-			if (handler != null)
-				handler (this, args);
-		}
+            handler?.Invoke (this, args);
+        }
 
 		// events
 		[MonitoringDescription ("")]

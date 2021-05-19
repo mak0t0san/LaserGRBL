@@ -29,7 +29,7 @@ namespace ExCSS
             G = g;
         }
 
-        public HtmlColor(Double a, byte r, byte g, byte b)
+        public HtmlColor(double a, byte r, byte g, byte b)
         {
             A = (byte)Math.Max(Math.Min(Math.Ceiling(255 * a), 255), 0);
             R = r;
@@ -37,12 +37,12 @@ namespace ExCSS
             G = g;
         }
 
-        public static HtmlColor FromRgba(byte r, byte g, byte b, Single a)
+        public static HtmlColor FromRgba(byte r, byte g, byte b, float a)
         {
             return new HtmlColor(a, r, g, b);
         }
 
-        public static HtmlColor FromRgba(byte r, byte g, byte b, Double a)
+        public static HtmlColor FromRgba(byte r, byte g, byte b, double a)
         {
             return new HtmlColor(a, r, g, b);
         }
@@ -52,15 +52,15 @@ namespace ExCSS
             return new HtmlColor(r, g, b);
         }
 
-        public static HtmlColor FromHsl(Single h, Single s, Single l)
+        public static HtmlColor FromHsl(float h, float s, float l)
         {
-            const Single third = 1f / 3f;
+            const float third = 1f / 3f;
 
             var m2 = l <= 0.5f ? (l * (s + 1f)) : (l + s - l * s);
             var m1 = 2f * l - m2;
-            var r = (Byte)Math.Round(255 * HueToRgb(m1, m2, h + third));
-            var g = (Byte)Math.Round(255 * HueToRgb(m1, m2, h));
-            var b = (Byte)Math.Round(255 * HueToRgb(m1, m2, h - third));
+            var r = (byte)Math.Round(255 * HueToRgb(m1, m2, h + third));
+            var g = (byte)Math.Round(255 * HueToRgb(m1, m2, h));
+            var b = (byte)Math.Round(255 * HueToRgb(m1, m2, h - third));
             return new HtmlColor(r, g, b);
         }
 
@@ -164,7 +164,7 @@ namespace ExCSS
             return a.GetHashCode() != b.GetHashCode();
         }
 
-        public override bool Equals(Object obj)
+        public override bool Equals(object obj)
         {
             if (obj is HtmlColor)
             {
@@ -219,10 +219,10 @@ namespace ExCSS
             return GetHashCode() == other.GetHashCode();
         }
 
-        private static Single HueToRgb(Single m1, Single m2, Single h)
+        private static float HueToRgb(float m1, float m2, float h)
         {
-            const Single sixth = 1f / 6f;
-            const Single third2 = 2f / 3f;
+            const float sixth = 1f / 6f;
+            const float third2 = 2f / 3f;
 
             if (h < 0f)
             {

@@ -811,10 +811,7 @@ namespace ExCSS
                         var container = CurrentRule as ISupportsMedia;
                         var medium = _buffer.ToString();
 
-                        if (container != null)
-                        {
-                            container.Media.AppendMedium(medium);
-                        }
+                        container?.Media.AppendMedium(medium);
 
                         if (CurrentRule is ImportRule)
                         {
@@ -828,10 +825,7 @@ namespace ExCSS
                     {
                         var container = CurrentRule as ISupportsMedia;
 
-                        if (container != null)
-                        {
-                            container.Media.AppendMedium(_buffer.ToString());
-                        }
+                        container?.Media.AppendMedium(_buffer.ToString());
 
                         _buffer.Length = 0;
                         return true;

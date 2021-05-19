@@ -145,7 +145,7 @@ namespace WebSocketSharp.Net
       _path = uriPrefix.Substring (root);
 
       _prefix =
-        String.Format ("http{0}://{1}:{2}{3}", _secure ? "s" : "", _host, _port, _path);
+        string.Format ("http{0}://{1}:{2}{3}", _secure ? "s" : "", _host, _port, _path);
     }
 
     #endregion
@@ -198,7 +198,7 @@ namespace WebSocketSharp.Net
     /// <c>true</c> if <paramref name="obj"/> is a <see cref="HttpListenerPrefix"/> and
     /// its value is the same as this instance; otherwise, <c>false</c>.
     /// </returns>
-    public override bool Equals (Object obj)
+    public override bool Equals (object obj)
     {
       var pref = obj as HttpListenerPrefix;
       return pref != null && pref._prefix == _prefix;

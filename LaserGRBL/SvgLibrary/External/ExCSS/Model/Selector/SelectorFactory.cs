@@ -298,10 +298,7 @@ namespace ExCSS
                     _attributeValue = string.Empty;
                     _selectorOperation = SelectorOperation.PseudoClassFunction;
 
-                    if (_nestedSelectorFactory != null)
-                    {
-                        _nestedSelectorFactory.ResetFactory();
-                    }
+                    _nestedSelectorFactory?.ResetFactory();
 
                     break;
 

@@ -146,9 +146,9 @@ namespace Svg.Text
         public struct TT_TABLE_DIRECTORY
         {
             public byte[] szTag;
-            public UInt32 uCheckSum;
-            public UInt32 uOffset;
-            public UInt32 uLength;
+            public uint uCheckSum;
+            public uint uOffset;
+            public uint uLength;
             public void Initialize()
             {
                 szTag = new byte[4];
@@ -172,7 +172,7 @@ namespace Svg.Text
             public ushort uStringOffset;
         }
 
-        static private UInt16 ReadChar(FileStream fs, int characters)
+        static private ushort ReadChar(FileStream fs, int characters)
         {
             string[] s = new string[characters];
             byte[] buf = new byte[Convert.ToByte(s.Length)];
@@ -181,21 +181,21 @@ namespace Svg.Text
             return BitConverter.ToUInt16(buf, 0);
         }
 
-        static private UInt16 ReadByte(FileStream fs)
+        static private ushort ReadByte(FileStream fs)
         {
             byte[] buf = new byte[11];
             buf = ReadAndSwap(fs, buf.Length);
             return BitConverter.ToUInt16(buf, 0);
         }
 
-        static private UInt16 ReadUShort(FileStream fs)
+        static private ushort ReadUShort(FileStream fs)
         {
             byte[] buf = new byte[2];
             buf = ReadAndSwap(fs, buf.Length);
             return BitConverter.ToUInt16(buf, 0);
         }
 
-        static private UInt32 ReadULong(FileStream fs)
+        static private uint ReadULong(FileStream fs)
         {
             byte[] buf = new byte[4];
             buf = ReadAndSwap(fs, buf.Length);

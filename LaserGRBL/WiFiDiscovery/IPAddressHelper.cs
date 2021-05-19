@@ -256,7 +256,7 @@ namespace LaserGRBL.WiFiDiscovery
 			IPAddress network2 = address2.GetNetworkAddress(subnetMask);
 			return network1.Equals(network2);
 		}
-		public static UInt32 ToUInt32(this IPAddress ip)
+		public static uint ToUInt32(this IPAddress ip)
 		{
 			return BitConverter.ToUInt32(ip.GetAddressBytes(), 0);
 		}
@@ -286,18 +286,18 @@ namespace LaserGRBL.WiFiDiscovery
 	}
 	public static class UInt16Helper
 	{
-		public static UInt16 ReverseBytes(UInt16 value)
+		public static ushort ReverseBytes(ushort value)
 		{
-			return (UInt16)((value & 0xFFU) << 8 | (value & 0xFF00U) >> 8);
+			return (ushort)((value & 0xFFU) << 8 | (value & 0xFF00U) >> 8);
 		}
 	}
 	public static class UInt32Helper
 	{
-		public static IPAddress ToIPAddress(this UInt32 ip)
+		public static IPAddress ToIPAddress(this uint ip)
 		{
 			return new IPAddress(BitConverter.GetBytes(ip));
 		}
-		public static UInt32 ReverseBytes(this UInt32 value)
+		public static uint ReverseBytes(this uint value)
 		{
 			return (value & 0x000000FFU) << 24 | (value & 0x0000FF00U) << 8 |
 				   (value & 0x00FF0000U) >> 8 | (value & 0xFF000000U) >> 24;
@@ -305,7 +305,7 @@ namespace LaserGRBL.WiFiDiscovery
 	}
 	public static class UInt64Helper
 	{
-		public static UInt64 ReverseBytes(this UInt64 value)
+		public static ulong ReverseBytes(this ulong value)
 		{
 			return (value & 0x00000000000000FFUL) << 56 | (value & 0x000000000000FF00UL) << 40 |
 				   (value & 0x0000000000FF0000UL) << 24 | (value & 0x00000000FF000000UL) << 8 |
@@ -440,10 +440,10 @@ namespace LaserGRBL.WiFiDiscovery
 
 	class IPSegment
 	{
-		private UInt32 ip;
-		private UInt32 mask;
-		private UInt32 networkAddress;
-		private UInt32 broadcastAddress;
+		private uint ip;
+		private uint mask;
+		private uint networkAddress;
+		private uint broadcastAddress;
 
 		private List<IPAddress> mAllHost;
 

@@ -69,10 +69,9 @@ namespace LaserGRBL.GrblEmulator
 		private void EmuLog(string p)
 		{
 			try
-			{
-				if (EmulatorMessage != null)
-					EmulatorMessage(p);
-			}
+            {
+                EmulatorMessage?.Invoke(p);
+            }
 			catch { }
 		}
 
@@ -194,9 +193,9 @@ namespace LaserGRBL.GrblEmulator
 		private void SendStatus()
 		{ 
 			if (SPB.HasWCO)
-				ImmediateTX(String.Format(System.Globalization.CultureInfo.InvariantCulture, "<{0}|MPos:{1:0.000},{2:0.000},{3:0.000}|WCO:{4:0.000},{5:0.000},{6:0.000}>\n", Status, px,py,pz,wx,wy,wz)); 
+				ImmediateTX(string.Format(System.Globalization.CultureInfo.InvariantCulture, "<{0}|MPos:{1:0.000},{2:0.000},{3:0.000}|WCO:{4:0.000},{5:0.000},{6:0.000}>\n", Status, px,py,pz,wx,wy,wz)); 
 			else
-				ImmediateTX(String.Format(System.Globalization.CultureInfo.InvariantCulture, "<{0}|MPos:{1:0.000},{2:0.000},{3:0.000}>\n", Status, px, py, pz)); 
+				ImmediateTX(string.Format(System.Globalization.CultureInfo.InvariantCulture, "<{0}|MPos:{1:0.000},{2:0.000},{3:0.000}>\n", Status, px, py, pz)); 
 		}
 
 		private string Status
@@ -283,13 +282,13 @@ namespace LaserGRBL.GrblEmulator
 			}
 		}
 
-		private void EnqueueTX(String response)
+		private void EnqueueTX(string response)
 		{
 			lock (txBuf)
 			{ txBuf.Enqueue(response + "\n"); }
 		}
 
-		private void ImmediateTX(String response)
+		private void ImmediateTX(string response)
 		{
 			lock (txBuf)
 			{ mSendFunc(response + "\n"); }

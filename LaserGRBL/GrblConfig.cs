@@ -89,7 +89,7 @@ namespace LaserGRBL
 				RefreshEnabledButtons();
 				Cursor = DefaultCursor;
 
-				ActionResult( String.Format(Strings.BoxReadConfigSuccess, mLocalCopy.Count));
+				ActionResult( string.Format(Strings.BoxReadConfigSuccess, mLocalCopy.Count));
 			}
 			catch (Exception)
 			{
@@ -123,19 +123,19 @@ namespace LaserGRBL
 				Cursor = Cursors.WaitCursor;
 				Core.WriteConfig(conf);
 				Cursor = DefaultCursor;
-				ActionResult(String.Format(import ? Strings.BoxImportConfigWithoutError : Strings.BoxWriteConfigWithoutError, conf.Count));
+				ActionResult(string.Format(import ? Strings.BoxImportConfigWithoutError : Strings.BoxWriteConfigWithoutError, conf.Count));
 
 				noerror = true;
 			}
 			catch (GrblCore.WriteConfigException ex)
 			{
 				Cursor = DefaultCursor;
-				System.Windows.Forms.MessageBox.Show(String.Format(import ? Strings.BoxImportConfigWithError : Strings.BoxWriteConfigWithError, conf.Count, ex.Errors.Count) + "\n" + ex.Message, Strings.BoxExportConfigErrorTitle, System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Error);
+				System.Windows.Forms.MessageBox.Show(string.Format(import ? Strings.BoxImportConfigWithError : Strings.BoxWriteConfigWithError, conf.Count, ex.Errors.Count) + "\n" + ex.Message, Strings.BoxExportConfigErrorTitle, System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Error);
 			}
 			catch (Exception)
 			{
 				Cursor = DefaultCursor;
-				System.Windows.Forms.MessageBox.Show(String.Format(import ? Strings.BoxImportConfigWithError : Strings.BoxWriteConfigWithError, conf.Count, "unknown"), Strings.BoxExportConfigErrorTitle, System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Error);
+				System.Windows.Forms.MessageBox.Show(string.Format(import ? Strings.BoxImportConfigWithError : Strings.BoxWriteConfigWithError, conf.Count, "unknown"), Strings.BoxExportConfigErrorTitle, System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Error);
 			}
 			finally
 			{
@@ -186,7 +186,7 @@ namespace LaserGRBL
 								sw.WriteLine(string.Format("${0}={1} ({2})", p.Number, p.Value.ToString(System.Globalization.NumberFormatInfo.InvariantInfo), p.Parameter));
 
 							sw.Close();
-							ActionResult(String.Format(Strings.BoxExportConfigSuccess, toexport.Count));
+							ActionResult(string.Format(Strings.BoxExportConfigSuccess, toexport.Count));
 						}
 					}
 					catch (Exception ex)

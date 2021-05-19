@@ -65,8 +65,8 @@ namespace LaserGRBL
         private TimeSpan UsageTime = TimeSpan.Zero;
 
         private ComWrapper.WrapperType Wrapper;
-		private String FirmwareString;
-		private String VendorString;
+		private string FirmwareString;
+		private string VendorString;
 
 		private UsageCounters Counters;
 		

@@ -45,10 +45,10 @@ namespace Svg
                 return false;
 
             // Always match if either value is String.Empty (wildcard)
-            if (indicator.Name == String.Empty)
+            if (indicator.Name == string.Empty)
                 return false;
 
-            return String.Compare(indicator.Name, this.Name) == 0;
+            return string.Compare(indicator.Name, this.Name) == 0;
         }
 
 		/// <summary>
@@ -91,7 +91,7 @@ namespace Svg
         /// </summary>
         internal SvgAttributeAttribute()
         {
-            this._name = String.Empty;
+            this._name = string.Empty;
         }
 
         /// <summary>

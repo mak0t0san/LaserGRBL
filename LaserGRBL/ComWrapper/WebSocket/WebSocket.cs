@@ -421,7 +421,7 @@ namespace WebSocketSharp
     /// </value>
     public string Extensions {
       get {
-        return _extensions ?? String.Empty;
+        return _extensions ?? string.Empty;
       }
     }
 
@@ -530,7 +530,7 @@ namespace WebSocketSharp
     /// </value>
     public string Protocol {
       get {
-        return _protocol ?? String.Empty;
+        return _protocol ?? string.Empty;
       }
 
       internal set {
@@ -684,7 +684,7 @@ namespace WebSocketSharp
     // As server
     private bool acceptHandshake ()
     {
-      _logger.Debug (String.Format ("A request from {0}:\n{1}", _context.UserEndPoint, _context));
+      _logger.Debug (string.Format ("A request from {0}:\n{1}", _context.UserEndPoint, _context));
 
       string msg;
       if (!checkHandshakeRequest (_context, out msg)) {
@@ -1060,7 +1060,7 @@ namespace WebSocketSharp
       var ret = sent && received;
 
       _logger.Debug (
-        String.Format (
+        string.Format (
           "Was clean?: {0}\n  sent: {1}\n  received: {2}", ret, sent, received
         )
       );
@@ -1088,7 +1088,7 @@ namespace WebSocketSharp
       var ret = sent && received;
 
       _logger.Debug (
-        String.Format (
+        string.Format (
           "Was clean?: {0}\n  sent: {1}\n  received: {2}", ret, sent, received
         )
       );
@@ -1751,8 +1751,7 @@ namespace WebSocketSharp
         ar => {
           try {
             var sent = sender.EndInvoke (ar);
-            if (completed != null)
-              completed (sent);
+            completed?.Invoke (sent);
           }
           catch (Exception ex) {
             _logger.Error (ex.ToString ());
@@ -1785,7 +1784,7 @@ namespace WebSocketSharp
       var res = sendHttpRequest (req, 90000);
       if (res.IsUnauthorized) {
         var chal = res.Headers["WWW-Authenticate"];
-        _logger.Warn (String.Format ("Received an authentication requirement for '{0}'.", chal));
+        _logger.Warn (string.Format ("Received an authentication requirement for '{0}'.", chal));
         if (chal.IsNullOrEmpty ()) {
           _logger.Error ("No authentication challenge is specified.");
           return res;
@@ -1813,7 +1812,7 @@ namespace WebSocketSharp
 
       if (res.IsRedirect) {
         var url = res.Headers["Location"];
-        _logger.Warn (String.Format ("Received a redirection to '{0}'.", url));
+        _logger.Warn (string.Format ("Received a redirection to '{0}'.", url));
         if (_enableRedirection) {
           if (url.IsNullOrEmpty ()) {
             _logger.Error ("No url to redirect is located.");
@@ -1865,7 +1864,7 @@ namespace WebSocketSharp
       if (res.IsProxyAuthenticationRequired) {
         var chal = res.Headers["Proxy-Authenticate"];
         _logger.Warn (
-          String.Format ("Received a proxy authentication requirement for '{0}'.", chal));
+          string.Format ("Received a proxy authentication requirement for '{0}'.", chal));
 
         if (chal.IsNullOrEmpty ())
           throw new WebSocketException ("No proxy authentication challenge is specified.");
@@ -1953,8 +1952,7 @@ namespace WebSocketSharp
             frame => {
               if (!processReceivedFrame (frame) || _readyState == WebSocketState.Closed) {
                 var exited = _receivingExited;
-                if (exited != null)
-                  exited.Set ();
+                exited?.Set ();
 
                 return;
               }
@@ -2213,7 +2211,7 @@ namespace WebSocketSharp
       var res = sent && received;
 
       _logger.Debug (
-        String.Format (
+        string.Format (
           "Was clean?: {0}\n  sent: {1}\n  received: {2}", res, sent, received
         )
       );
@@ -2430,7 +2428,7 @@ namespace WebSocketSharp
     /// </remarks>
     public void Close ()
     {
-      close (1005, String.Empty);
+      close (1005, string.Empty);
     }
 
     /// <summary>
@@ -2457,7 +2455,7 @@ namespace WebSocketSharp
         return;
       }
 
-      close (code, String.Empty);
+      close (code, string.Empty);
     }
 
     /// <summary>
@@ -2482,7 +2480,7 @@ namespace WebSocketSharp
         return;
       }
 
-      close ((ushort) code, String.Empty);
+      close ((ushort) code, string.Empty);
     }
 
     /// <summary>
@@ -2560,7 +2558,7 @@ namespace WebSocketSharp
     /// </remarks>
     public void CloseAsync ()
     {
-      closeAsync (1005, String.Empty);
+      closeAsync (1005, string.Empty);
     }
 
     /// <summary>
@@ -2592,7 +2590,7 @@ namespace WebSocketSharp
         return;
       }
 
-      closeAsync (code, String.Empty);
+      closeAsync (code, string.Empty);
     }
 
     /// <summary>
@@ -2622,7 +2620,7 @@ namespace WebSocketSharp
         return;
       }
 
-      closeAsync ((ushort) code, String.Empty);
+      closeAsync ((ushort) code, string.Empty);
     }
 
     /// <summary>
@@ -2956,7 +2954,7 @@ namespace WebSocketSharp
 
       if (len < length) {
         _logger.Warn (
-          String.Format (
+          string.Format (
             "Only {0} byte(s) of data could be read from the specified stream.",
             len
           )
@@ -3159,7 +3157,7 @@ namespace WebSocketSharp
 
       if (len < length) {
         _logger.Warn (
-          String.Format (
+          string.Format (
             "Only {0} byte(s) of data could be read from the specified stream.",
             len
           )
@@ -3349,7 +3347,7 @@ namespace WebSocketSharp
 
         _proxyCredentials =
           new NetworkCredential (
-            username, password, String.Format ("{0}:{1}", _uri.DnsSafeHost, _uri.Port)
+            username, password, string.Format ("{0}:{1}", _uri.DnsSafeHost, _uri.Port)
           );
       }
     }
@@ -3372,7 +3370,7 @@ namespace WebSocketSharp
     /// </remarks>
     void IDisposable.Dispose ()
     {
-      close (1001, String.Empty);
+      close (1001, string.Empty);
     }
 
     #endregion

@@ -14,7 +14,7 @@ namespace LaserGRBL.WiFiDiscovery
 {
 	public partial class DiscoveryForm : Form
 	{
-		String RV;
+		string RV;
 
 		Task T;
 		CancellationTokenSource C;
@@ -133,7 +133,7 @@ namespace LaserGRBL.WiFiDiscovery
 
 		internal static string CreateAndShowDialog(Form parent)
 		{
-			String RV;
+			string RV;
 			using (DiscoveryForm F = new DiscoveryForm())
 			{
 				F.ShowDialog(parent);

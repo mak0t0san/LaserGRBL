@@ -62,7 +62,7 @@ namespace LaserGRBL
 
 			public override string ToString()
 			{
-				return String.Format("{0}{1}{2}", Version, IsPreRelease ? "-pre" : "", IsValid ? "" : " (not available)");
+				return string.Format("{0}{1}{2}", Version, IsPreRelease ? "-pre" : "", IsValid ? "" : " (not available)");
 			}
 		}
 

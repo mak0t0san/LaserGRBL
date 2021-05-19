@@ -259,7 +259,7 @@ namespace WebSocketSharp.Server
     /// </value>
     public string Protocol {
       get {
-        return _websocket != null ? _websocket.Protocol : (_protocol ?? String.Empty);
+        return _websocket != null ? _websocket.Protocol : (_protocol ?? string.Empty);
       }
 
       set {
@@ -453,8 +453,7 @@ namespace WebSocketSharp.Server
     /// </param>
     protected void Send (byte[] data)
     {
-      if (_websocket != null)
-        _websocket.Send (data);
+        _websocket?.Send (data);
     }
 
     /// <summary>
@@ -468,8 +467,7 @@ namespace WebSocketSharp.Server
     /// </param>
     protected void Send (FileInfo file)
     {
-      if (_websocket != null)
-        _websocket.Send (file);
+        _websocket?.Send (file);
     }
 
     /// <summary>
@@ -483,8 +481,7 @@ namespace WebSocketSharp.Server
     /// </param>
     protected void Send (string data)
     {
-      if (_websocket != null)
-        _websocket.Send (data);
+        _websocket?.Send (data);
     }
 
     /// <summary>
@@ -508,8 +505,7 @@ namespace WebSocketSharp.Server
     /// </param>
     protected void SendAsync (byte[] data, Action<bool> completed)
     {
-      if (_websocket != null)
-        _websocket.SendAsync (data, completed);
+        _websocket?.SendAsync (data, completed);
     }
 
     /// <summary>
@@ -534,8 +530,7 @@ namespace WebSocketSharp.Server
     /// </param>
     protected void SendAsync (FileInfo file, Action<bool> completed)
     {
-      if (_websocket != null)
-        _websocket.SendAsync (file, completed);
+        _websocket?.SendAsync (file, completed);
     }
 
     /// <summary>
@@ -559,8 +554,7 @@ namespace WebSocketSharp.Server
     /// </param>
     protected void SendAsync (string data, Action<bool> completed)
     {
-      if (_websocket != null)
-        _websocket.SendAsync (data, completed);
+        _websocket?.SendAsync (data, completed);
     }
 
     /// <summary>
@@ -588,8 +582,7 @@ namespace WebSocketSharp.Server
     /// </param>
     protected void SendAsync (Stream stream, int length, Action<bool> completed)
     {
-      if (_websocket != null)
-        _websocket.SendAsync (stream, length, completed);
+        _websocket?.SendAsync (stream, length, completed);
     }
 
     #endregion

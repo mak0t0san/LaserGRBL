@@ -189,7 +189,7 @@ namespace WebSocketSharp.Net
 
       _chunkRead = 0;
       try {
-        _chunkSize = Int32.Parse (
+        _chunkSize = int.Parse (
           removeChunkExtension (_saved.ToString ()), NumberStyles.HexNumber);
       }
       catch {

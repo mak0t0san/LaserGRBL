@@ -87,7 +87,7 @@ namespace WebSocketSharp.Net
         throw new HttpListenerException (87, "Includes an invalid host.");
 
       int port;
-      if (!Int32.TryParse (pref.Port, out port))
+      if (!int.TryParse (pref.Port, out port))
         throw new HttpListenerException (87, "Includes an invalid port.");
 
       if (!port.IsPortNumber ())
@@ -137,7 +137,7 @@ namespace WebSocketSharp.Net
         return;
 
       int port;
-      if (!Int32.TryParse (pref.Port, out port))
+      if (!int.TryParse (pref.Port, out port))
         return;
 
       if (!port.IsPortNumber ())

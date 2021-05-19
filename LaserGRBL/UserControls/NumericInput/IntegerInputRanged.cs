@@ -104,10 +104,8 @@ namespace LaserGRBL.UserControls.NumericInput
 				if (!(value == _MaxValue)) {
 					_MaxValue = value;
 					UpdateStatus();
-					if (MaxValueChanged != null) {
-						MaxValueChanged(this, value);
-					}
-					CheckInError();
+                    MaxValueChanged?.Invoke(this, value);
+                    CheckInError();
 				}
 			}
 		}
@@ -119,10 +117,8 @@ namespace LaserGRBL.UserControls.NumericInput
 				if (!(value == _MinValue)) {
 					_MinValue = value;
 					UpdateStatus();
-					if (MinValueChanged != null) {
-						MinValueChanged(this, value);
-					}
-					CheckInError();
+                    MinValueChanged?.Invoke(this, value);
+                    CheckInError();
 				}
 			}
 		}
@@ -148,9 +144,8 @@ namespace LaserGRBL.UserControls.NumericInput
 			{
 				OldErrorState = InError;
 
-				if (IsInErrorChanged != null) 
-					IsInErrorChanged(this, InError);
-			}
+                IsInErrorChanged?.Invoke(this, InError);
+            }
 		}
 
 		protected override void UpdateStatus()

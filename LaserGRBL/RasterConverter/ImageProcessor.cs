@@ -13,7 +13,7 @@ using System.Threading;
 
 namespace LaserGRBL.RasterConverter
 {
-    public class ImageProcessor : ICloneable
+    public class ImageProcessor : ICloneable, IDisposable
     {
         public delegate void PreviewBeginDlg();
 
@@ -33,7 +33,6 @@ namespace LaserGRBL.RasterConverter
         private int mFileDPI;
         private Size mFileResolution;
 
-        private bool mGrayScale; //image has no color
         private bool mSuspended; //image generator suspended for multiple property change
         private Size mBoxSize; //size of the picturebox frame
 
@@ -143,7 +142,7 @@ namespace LaserGRBL.RasterConverter
 
             mBoxSize = boxSize;
             ResizeRecalc();
-            mGrayScale = TestGrayScale(mOriginal);
+            IsGrayScale = TestGrayScale(mOriginal);
         }
 
         internal void FormResize(Size size)
@@ -164,10 +163,7 @@ namespace LaserGRBL.RasterConverter
             return rv;
         }
 
-        public bool IsGrayScale
-        {
-            get { return mGrayScale; }
-        }
+        public bool IsGrayScale { get; }
 
         bool TestGrayScale(Bitmap bmp)
         {
@@ -190,8 +186,7 @@ namespace LaserGRBL.RasterConverter
         public void Dispose()
         {
             Suspend();
-            if (Current != null)
-                Current.AbortThread();
+            Current?.AbortThread();
 
             mTrueOriginal.Dispose();
             mOriginal.Dispose();
@@ -215,7 +210,7 @@ namespace LaserGRBL.RasterConverter
 
         public InterpolationMode Interpolation
         {
-            get { return mInterpolation; }
+            get => mInterpolation;
             set
             {
                 if (value != mInterpolation)
@@ -283,14 +278,14 @@ namespace LaserGRBL.RasterConverter
                 colors[i] = GetLineColor(i, 1, 0, Color.Empty);
 
             Color rv = Color.Empty;
-            for (int i = 0; i < colors.Length; i++)
+            foreach (var t in colors)
             {
-                if (!colors[i].IsEmpty) //skippa i bordi non omogenei
+                if (!t.IsEmpty) //skippa i bordi non omogenei
                 {
                     if (rv.IsEmpty)
-                        rv = colors[i];
-                    else if (IsSimilarColor(rv, colors[i]))
-                        rv = ColorAvg(rv, colors[i]);
+                        rv = t;
+                    else if (IsSimilarColor(rv, t))
+                        rv = ColorAvg(rv, t);
                     else
                         return Color.Empty;
                 }
@@ -354,7 +349,9 @@ namespace LaserGRBL.RasterConverter
         public void CropImage(Rectangle rect, Size rsize)
         {
             if (rect.Width <= 0 || rect.Height <= 0)
+            {
                 return;
+            }
 
             var scaled = new Rectangle(rect.X * mOriginal.Width / rsize.Width,
                 rect.Y * mOriginal.Height / rsize.Height,
@@ -424,8 +421,7 @@ namespace LaserGRBL.RasterConverter
         {
             lock (this)
             {
-                if (mResized != null)
-                    mResized.Dispose();
+                mResized?.Dispose();
 
                 mResized = ImageTransform.ResizeImage(mOriginal, CalculateResizeToFit(mOriginal.Size, mBoxSize), false,
                     Interpolation);
@@ -837,8 +833,7 @@ namespace LaserGRBL.RasterConverter
             if (mSuspended)
                 return;
 
-            if (Current != null)
-                Current.AbortThread();
+            Current?.AbortThread();
 
             Current = (ImageProcessor) this.Clone();
             Current.RunThread();
@@ -850,8 +845,7 @@ namespace LaserGRBL.RasterConverter
             TH = new Thread(CreatePreview);
             TH.Name = "Image Processor";
 
-            if (PreviewBegin != null)
-                PreviewBegin();
+            PreviewBegin?.Invoke();
 
             TH.Start();
         }
@@ -1005,8 +999,7 @@ namespace LaserGRBL.RasterConverter
             if (mSuspended)
                 return;
 
-            if (Current != null)
-                Current.AbortThread();
+            Current?.AbortThread();
 
             Current = (ImageProcessor) this.Clone();
             Current.GenerateGCode2();
@@ -1091,19 +1084,16 @@ namespace LaserGRBL.RasterConverter
                                 UseLineThreshold, LineThreshold, conf, mAppend);
                     }
 
-                    if (GenerationComplete != null)
-                        GenerationComplete(null);
+                    GenerationComplete?.Invoke(null);
                 }
                 else
                 {
-                    if (GenerationComplete != null)
-                        GenerationComplete(new System.InvalidOperationException("Target size too big for processing!"));
+                    GenerationComplete?.Invoke(new System.InvalidOperationException("Target size too big for processing!"));
                 }
             }
             catch (Exception ex)
             {
-                if (GenerationComplete != null)
-                    GenerationComplete(ex);
+                GenerationComplete?.Invoke(ex);
             }
         }
 

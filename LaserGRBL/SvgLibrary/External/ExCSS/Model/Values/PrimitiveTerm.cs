@@ -15,26 +15,26 @@ namespace ExCSS
             Value = value;
         }
 
-        public PrimitiveTerm(UnitType unitType, Single value)
+        public PrimitiveTerm(UnitType unitType, float value)
         {
             PrimitiveType = unitType;
             Value = value;
         }
 
-        public PrimitiveTerm(string unit, Single value)
+        public PrimitiveTerm(string unit, float value)
         {
             PrimitiveType = ConvertStringToUnitType(unit);;
             Value = value;
         }
 
-        public Single? GetFloatValue(UnitType unit)
+        public float? GetFloatValue(UnitType unit)
         {
-            if (!(Value is Single))
+            if (!(Value is float))
             {
                 return null;
             }
 
-            var quantity = (Single)Value;
+            var quantity = (float)Value;
 
             switch (unit)
             {
@@ -57,8 +57,8 @@ namespace ExCSS
                     return "url(" + Value + ")";
 
                 default:
-                    if (Value is Single)
-                        return ((Single)Value).ToString(CultureInfo.InvariantCulture) + ConvertUnitTypeToString(PrimitiveType);
+                    if (Value is float)
+                        return ((float)Value).ToString(CultureInfo.InvariantCulture) + ConvertUnitTypeToString(PrimitiveType);
 
                     return Value.ToString();
             }

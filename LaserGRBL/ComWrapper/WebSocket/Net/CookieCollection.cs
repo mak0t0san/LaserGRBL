@@ -189,7 +189,7 @@ namespace WebSocketSharp.Net
     /// <value>
     /// An <see cref="Object"/> used to synchronize access to the collection.
     /// </value>
-    public Object SyncRoot {
+    public object SyncRoot {
       get {
         return _sync ?? (_sync = ((ICollection) _list).SyncRoot);
       }
@@ -227,7 +227,7 @@ namespace WebSocketSharp.Net
           continue;
 
         if (pair.StartsWith ("$version", StringComparison.InvariantCultureIgnoreCase)) {
-          ver = Int32.Parse (pair.GetValue ('=', true));
+          ver = int.Parse (pair.GetValue ('=', true));
         }
         else if (pair.StartsWith ("$path", StringComparison.InvariantCultureIgnoreCase)) {
           if (cookie != null)
@@ -250,7 +250,7 @@ namespace WebSocketSharp.Net
             cookies.Add (cookie);
 
           string name;
-          string val = String.Empty;
+          string val = string.Empty;
 
           var pos = pair.IndexOf ('=');
           if (pos == -1) {
@@ -289,7 +289,7 @@ namespace WebSocketSharp.Net
 
         if (pair.StartsWith ("version", StringComparison.InvariantCultureIgnoreCase)) {
           if (cookie != null)
-            cookie.Version = Int32.Parse (pair.GetValue ('=', true));
+            cookie.Version = int.Parse (pair.GetValue ('=', true));
         }
         else if (pair.StartsWith ("expires", StringComparison.InvariantCultureIgnoreCase)) {
           var buff = new StringBuilder (pair.GetValue ('='), 32);
@@ -309,7 +309,7 @@ namespace WebSocketSharp.Net
             cookie.Expires = expires.ToLocalTime ();
         }
         else if (pair.StartsWith ("max-age", StringComparison.InvariantCultureIgnoreCase)) {
-          var max = Int32.Parse (pair.GetValue ('=', true));
+          var max = int.Parse (pair.GetValue ('=', true));
           var expires = DateTime.Now.AddSeconds ((double) max);
           if (cookie != null)
             cookie.Expires = expires;
@@ -355,7 +355,7 @@ namespace WebSocketSharp.Net
             cookies.Add (cookie);
 
           string name;
-          string val = String.Empty;
+          string val = string.Empty;
 
           var pos = pair.IndexOf ('=');
           if (pos == -1) {

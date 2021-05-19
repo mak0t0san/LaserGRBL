@@ -67,17 +67,14 @@ namespace Svg
             {
                 var result = (TAttributeType)base[attributeName];
                 var deferred = result as SvgDeferredPaintServer;
-                if (deferred != null) deferred.EnsureServer(_owner);
+                deferred?.EnsureServer(_owner);
                 return result;
             }
 
-            if (this._owner.Parent != null)
+            var parentAttribute = _owner.Parent?.Attributes[attributeName];
+            if (parentAttribute != null)
             {
-                var parentAttribute = this._owner.Parent.Attributes[attributeName];
-                if (parentAttribute != null)
-                {
-                    return (TAttributeType)parentAttribute;
-                }
+                return (TAttributeType)parentAttribute;
             }
 
             return default(TAttributeType);
@@ -168,10 +165,7 @@ namespace Svg
         private void OnAttributeChanged(string attribute, object value)
         {
         	var handler = AttributeChanged;
-        	if(handler != null)
-        	{
-        		handler(this._owner, new AttributeEventArgs { Attribute = attribute, Value = value });
-        	}
+            handler?.Invoke(this._owner, new AttributeEventArgs { Attribute = attribute, Value = value });
         }
     }
     
@@ -224,10 +218,7 @@ namespace Svg
         private void OnAttributeChanged(string attribute, object value)
         {
         	var handler = AttributeChanged;
-        	if(handler != null)
-        	{
-        		handler(this._owner, new AttributeEventArgs { Attribute = attribute, Value = value });
-        	}
+            handler?.Invoke(this._owner, new AttributeEventArgs { Attribute = attribute, Value = value });
         }
     }
 }

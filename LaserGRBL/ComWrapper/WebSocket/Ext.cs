@@ -312,8 +312,7 @@ namespace WebSocketSharp
         try {
           var nread = source.EndRead (ar);
           if (nread <= 0) {
-            if (completed != null)
-              completed ();
+              completed?.Invoke ();
 
             return;
           }
@@ -321,18 +320,18 @@ namespace WebSocketSharp
           destination.Write (buff, 0, nread);
           source.BeginRead (buff, 0, bufferLength, callback, null);
         }
-        catch (Exception ex) {
-          if (error != null)
-            error (ex);
+        catch (Exception ex)
+        {
+            error?.Invoke (ex);
         }
       };
 
       try {
         source.BeginRead (buff, 0, bufferLength, callback, null);
       }
-      catch (Exception ex) {
-        if (error != null)
-          error (ex);
+      catch (Exception ex)
+      {
+          error?.Invoke (ex);
       }
     }
 
@@ -425,7 +424,7 @@ namespace WebSocketSharp
                            ? "WebSocket server got an internal error."
                            : code == CloseStatusCode.TlsHandshakeFailure
                              ? "An error has occurred during a TLS handshake."
-                             : String.Empty;
+                             : string.Empty;
     }
 
     /// <summary>
@@ -591,7 +590,7 @@ namespace WebSocketSharp
 
     internal static string Quote (this string value)
     {
-      return String.Format ("\"{0}\"", value.Replace ("\"", "\\\""));
+      return string.Format ("\"{0}\"", value.Replace ("\"", "\\\""));
     }
 
     internal static byte[] ReadBytes (this Stream stream, int length)
@@ -662,8 +661,7 @@ namespace WebSocketSharp
             }
 
             if (nread == 0 || nread == length) {
-              if (completed != null)
-                completed (buff.SubArray (0, offset + nread));
+                completed?.Invoke (buff.SubArray (0, offset + nread));
 
               return;
             }
@@ -675,18 +673,18 @@ namespace WebSocketSharp
 
             stream.BeginRead (buff, offset, length, callback, null);
           }
-          catch (Exception ex) {
-            if (error != null)
-              error (ex);
+          catch (Exception ex)
+          {
+              error?.Invoke (ex);
           }
         };
 
       try {
         stream.BeginRead (buff, offset, length, callback, null);
       }
-      catch (Exception ex) {
-        if (error != null)
-          error (ex);
+      catch (Exception ex)
+      {
+          error?.Invoke (ex);
       }
     }
 
@@ -740,8 +738,7 @@ namespace WebSocketSharp
               }
               catch (Exception ex) {
                 dest.Dispose ();
-                if (error != null)
-                  error (ex);
+                error?.Invoke (ex);
               }
             },
             null
@@ -753,8 +750,7 @@ namespace WebSocketSharp
       }
       catch (Exception ex) {
         dest.Dispose ();
-        if (error != null)
-          error (ex);
+        error?.Invoke (ex);
       }
     }
 
@@ -847,13 +843,13 @@ namespace WebSocketSharp
       this CompressionMethod method, params string[] parameters)
     {
       if (method == CompressionMethod.None)
-        return String.Empty;
+        return string.Empty;
 
-      var m = String.Format ("permessage-{0}", method.ToString ().ToLower ());
+      var m = string.Format ("permessage-{0}", method.ToString ().ToLower ());
       if (parameters == null || parameters.Length == 0)
         return m;
 
-      return String.Format ("{0}; {1}", m, parameters.ToString ("; "));
+      return string.Format ("{0}; {1}", m, parameters.ToString ("; "));
     }
 
     internal static System.Net.IPAddress ToIPAddress (this string value)
@@ -960,7 +956,7 @@ namespace WebSocketSharp
       result = port != -1
                ? uri
                : new Uri (
-                   String.Format (
+                   string.Format (
                      "{0}://{1}:{2}{3}",
                      schm,
                      uri.Host,
@@ -1028,7 +1024,7 @@ namespace WebSocketSharp
       return len < 0
              ? value
              : len == 0
-               ? String.Empty
+               ? string.Empty
                : value.Substring (start + 1, len).Replace ("\\\"", "\"");
     }
 
@@ -1061,15 +1057,13 @@ namespace WebSocketSharp
         stream,
         bufferLength,
         () => {
-          if (completed != null)
-            completed ();
+            completed?.Invoke ();
 
           input.Dispose ();
         },
         ex => {
           input.Dispose ();
-          if (error != null)
-            error (ex);
+          error?.Invoke (ex);
         });
     }
 
@@ -1166,8 +1160,7 @@ namespace WebSocketSharp
     /// </param>
     public static void Emit (this EventHandler eventHandler, object sender, EventArgs e)
     {
-      if (eventHandler != null)
-        eventHandler (sender, e);
+        eventHandler?.Invoke (sender, e);
     }
 
     /// <summary>
@@ -1190,8 +1183,7 @@ namespace WebSocketSharp
       this EventHandler<TEventArgs> eventHandler, object sender, TEventArgs e)
       where TEventArgs : EventArgs
     {
-      if (eventHandler != null)
-        eventHandler (sender, e);
+        eventHandler?.Invoke (sender, e);
     }
 
     /// <summary>
@@ -1289,7 +1281,7 @@ namespace WebSocketSharp
         case 507: return "Insufficient Storage";
       }
 
-      return String.Empty;
+      return string.Empty;
     }
 
     /// <summary>
@@ -1786,25 +1778,25 @@ namespace WebSocketSharp
       var type = typeof (T);
       var buff = source.ToHostOrder (sourceOrder);
 
-      return type == typeof (Boolean)
+      return type == typeof (bool)
              ? (T)(object) BitConverter.ToBoolean (buff, 0)
-             : type == typeof (Char)
+             : type == typeof (char)
                ? (T)(object) BitConverter.ToChar (buff, 0)
-               : type == typeof (Double)
+               : type == typeof (double)
                  ? (T)(object) BitConverter.ToDouble (buff, 0)
-                 : type == typeof (Int16)
+                 : type == typeof (short)
                    ? (T)(object) BitConverter.ToInt16 (buff, 0)
-                   : type == typeof (Int32)
+                   : type == typeof (int)
                      ? (T)(object) BitConverter.ToInt32 (buff, 0)
-                     : type == typeof (Int64)
+                     : type == typeof (long)
                        ? (T)(object) BitConverter.ToInt64 (buff, 0)
-                       : type == typeof (Single)
+                       : type == typeof (float)
                          ? (T)(object) BitConverter.ToSingle (buff, 0)
-                         : type == typeof (UInt16)
+                         : type == typeof (ushort)
                            ? (T)(object) BitConverter.ToUInt16 (buff, 0)
-                           : type == typeof (UInt32)
+                           : type == typeof (uint)
                              ? (T)(object) BitConverter.ToUInt32 (buff, 0)
-                             : type == typeof (UInt64)
+                             : type == typeof (ulong)
                                ? (T)(object) BitConverter.ToUInt64 (buff, 0)
                                : default (T);
     }
@@ -1828,28 +1820,28 @@ namespace WebSocketSharp
       where T : struct
     {
       var type = typeof (T);
-      var bytes = type == typeof (Boolean)
-                  ? BitConverter.GetBytes ((Boolean)(object) value)
-                  : type == typeof (Byte)
-                    ? new byte[] { (Byte)(object) value }
-                    : type == typeof (Char)
-                      ? BitConverter.GetBytes ((Char)(object) value)
-                      : type == typeof (Double)
-                        ? BitConverter.GetBytes ((Double)(object) value)
-                        : type == typeof (Int16)
-                          ? BitConverter.GetBytes ((Int16)(object) value)
-                          : type == typeof (Int32)
-                            ? BitConverter.GetBytes ((Int32)(object) value)
-                            : type == typeof (Int64)
-                              ? BitConverter.GetBytes ((Int64)(object) value)
-                              : type == typeof (Single)
-                                ? BitConverter.GetBytes ((Single)(object) value)
-                                : type == typeof (UInt16)
-                                  ? BitConverter.GetBytes ((UInt16)(object) value)
-                                  : type == typeof (UInt32)
-                                    ? BitConverter.GetBytes ((UInt32)(object) value)
-                                    : type == typeof (UInt64)
-                                      ? BitConverter.GetBytes ((UInt64)(object) value)
+      var bytes = type == typeof (bool)
+                  ? BitConverter.GetBytes ((bool)(object) value)
+                  : type == typeof (byte)
+                    ? new byte[] { (byte)(object) value }
+                    : type == typeof (char)
+                      ? BitConverter.GetBytes ((char)(object) value)
+                      : type == typeof (double)
+                        ? BitConverter.GetBytes ((double)(object) value)
+                        : type == typeof (short)
+                          ? BitConverter.GetBytes ((short)(object) value)
+                          : type == typeof (int)
+                            ? BitConverter.GetBytes ((int)(object) value)
+                            : type == typeof (long)
+                              ? BitConverter.GetBytes ((long)(object) value)
+                              : type == typeof (float)
+                                ? BitConverter.GetBytes ((float)(object) value)
+                                : type == typeof (ushort)
+                                  ? BitConverter.GetBytes ((ushort)(object) value)
+                                  : type == typeof (uint)
+                                    ? BitConverter.GetBytes ((uint)(object) value)
+                                    : type == typeof (ulong)
+                                      ? BitConverter.GetBytes ((ulong)(object) value)
                                       : WebSocket.EmptyBytes;
 
       if (bytes.Length > 1 && !order.IsHostOrder ())
@@ -1910,10 +1902,10 @@ namespace WebSocketSharp
 
       var len = array.Length;
       if (len == 0)
-        return String.Empty;
+        return string.Empty;
 
       if (separator == null)
-        separator = String.Empty;
+        separator = string.Empty;
 
       var buff = new StringBuilder (64);
       (len - 1).Times (i => buff.AppendFormat ("{0}{1}", array[i].ToString (), separator));
@@ -2014,7 +2006,7 @@ namespace WebSocketSharp
 
       response.ContentLength64 = len;
       var output = response.OutputStream;
-      if (len <= Int32.MaxValue)
+      if (len <= int.MaxValue)
         output.Write (content, 0, (int) len);
       else
         output.WriteBytes (content, 1024);

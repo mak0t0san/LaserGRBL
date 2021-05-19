@@ -24,7 +24,7 @@ namespace Svg
 #if Net4
             return String.Join(" ", this.Select(u => u.ToString()));
 #else
-            return String.Join(" ", this.Select(u => u.ToString()).ToArray());
+            return string.Join(" ", this.Select(u => u.ToString()).ToArray());
 #endif
         }
 

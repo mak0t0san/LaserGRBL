@@ -214,17 +214,17 @@ namespace ClipperLib
 
 	internal struct Int128
 	{
-		private Int64 hi;
-		private UInt64 lo;
+		private long hi;
+		private ulong lo;
 
-		public Int128(Int64 _lo)
+		public Int128(long _lo)
 		{
-			lo = (UInt64)_lo;
+			lo = (ulong)_lo;
 			if (_lo < 0) hi = -1;
 			else hi = 0;
 		}
 
-		public Int128(Int64 _hi, UInt64 _lo)
+		public Int128(long _hi, ulong _lo)
 		{
 			lo = _lo;
 			hi = _hi;
@@ -253,7 +253,7 @@ namespace ClipperLib
 			return !(val1 == val2);
 		}
 
-		public override bool Equals(System.Object obj)
+		public override bool Equals(object obj)
 		{
 			if (obj == null || !(obj is Int128))
 				return false;
@@ -321,24 +321,24 @@ namespace ClipperLib
 		//is slow. So, although calling the Int128Mul method doesn't look as clean, the 
 		//code runs significantly faster than if we'd used the * operator.
 
-		public static Int128 Int128Mul(Int64 lhs, Int64 rhs)
+		public static Int128 Int128Mul(long lhs, long rhs)
 		{
 			bool negate = (lhs < 0) != (rhs < 0);
 			if (lhs < 0) lhs = -lhs;
 			if (rhs < 0) rhs = -rhs;
-			UInt64 int1Hi = (UInt64)lhs >> 32;
-			UInt64 int1Lo = (UInt64)lhs & 0xFFFFFFFF;
-			UInt64 int2Hi = (UInt64)rhs >> 32;
-			UInt64 int2Lo = (UInt64)rhs & 0xFFFFFFFF;
+			ulong int1Hi = (ulong)lhs >> 32;
+			ulong int1Lo = (ulong)lhs & 0xFFFFFFFF;
+			ulong int2Hi = (ulong)rhs >> 32;
+			ulong int2Lo = (ulong)rhs & 0xFFFFFFFF;
 
 			//nb: see comments in clipper.pas
-			UInt64 a = int1Hi * int2Hi;
-			UInt64 b = int1Lo * int2Lo;
-			UInt64 c = int1Hi * int2Lo + int1Lo * int2Hi;
+			ulong a = int1Hi * int2Hi;
+			ulong b = int1Lo * int2Lo;
+			ulong c = int1Hi * int2Lo + int1Lo * int2Hi;
 
-			UInt64 lo;
-			Int64 hi;
-			hi = (Int64)(a + (c >> 32));
+			ulong lo;
+			long hi;
+			hi = (long)(a + (c >> 32));
 
 			unchecked { lo = (c << 32) + b; }
 			if (lo < b) hi++;
@@ -353,8 +353,8 @@ namespace ClipperLib
 
 	public struct IntPoint
 	{
-		public cInt X;
-		public cInt Y;
+		public long X;
+		public long Y;
 #if use_xyz
     public cInt Z;
     
@@ -378,13 +378,13 @@ namespace ClipperLib
       this.X = pt.X; this.Y = pt.Y; this.Z = pt.Z;
     }
 #else
-		public IntPoint(cInt X, cInt Y)
+		public IntPoint(long X, long Y)
 		{
 			this.X = X; this.Y = Y;
 		}
 		public IntPoint(double x, double y)
 		{
-			this.X = (cInt)x; this.Y = (cInt)y;
+			this.X = (long)x; this.Y = (long)y;
 		}
 
 		public IntPoint(IntPoint pt)
@@ -424,12 +424,12 @@ namespace ClipperLib
 
 	public struct IntRect
 	{
-		public cInt left;
-		public cInt top;
-		public cInt right;
-		public cInt bottom;
+		public long left;
+		public long top;
+		public long right;
+		public long bottom;
 
-		public IntRect(cInt l, cInt t, cInt r, cInt b)
+		public IntRect(long l, long t, long r, long b)
 		{
 			this.left = l; this.top = t;
 			this.right = r; this.bottom = b;
@@ -489,7 +489,7 @@ namespace ClipperLib
 	{
 		public int Compare(IntersectNode node1, IntersectNode node2)
 		{
-			cInt i = node2.Pt.Y - node1.Pt.Y;
+			long i = node2.Pt.Y - node1.Pt.Y;
 			if (i > 0) return 1;
 			else if (i < 0) return -1;
 			else return 0;
@@ -498,7 +498,7 @@ namespace ClipperLib
 
 	internal class LocalMinima
 	{
-		internal cInt Y;
+		internal long Y;
 		internal TEdge LeftBound;
 		internal TEdge RightBound;
 		internal LocalMinima Next;
@@ -506,13 +506,13 @@ namespace ClipperLib
 
 	internal class Scanbeam
 	{
-		internal cInt Y;
+		internal long Y;
 		internal Scanbeam Next;
 	};
 
 	internal class Maxima
 	{
-		internal cInt X;
+		internal long X;
 		internal Maxima Next;
 		internal Maxima Prev;
 	};
@@ -557,8 +557,8 @@ namespace ClipperLib
     public const cInt loRange = 0x7FFF;
     public const cInt hiRange = 0x7FFF;
 #else
-		public const cInt loRange = 0x3FFFFFFF;
-		public const cInt hiRange = 0x3FFFFFFFFFFFFFFFL;
+		public const long loRange = 0x3FFFFFFF;
+		public const long hiRange = 0x3FFFFFFFFFFFFFFFL;
 #endif
 
 		internal LocalMinima m_MinimaList;
@@ -579,9 +579,9 @@ namespace ClipperLib
 		}
 		//------------------------------------------------------------------------------
 
-		public void Swap(ref cInt val1, ref cInt val2)
+		public void Swap(ref long val1, ref long val2)
 		{
-			cInt tmp = val1;
+			long tmp = val1;
 			val1 = val2;
 			val2 = tmp;
 		}
@@ -645,8 +645,8 @@ namespace ClipperLib
 			if (UseFullRange)
 				return Int128.Int128Mul(e1.Delta.Y, e2.Delta.X) ==
 					Int128.Int128Mul(e1.Delta.X, e2.Delta.Y);
-			else return (cInt)(e1.Delta.Y) * (e2.Delta.X) ==
-			  (cInt)(e1.Delta.X) * (e2.Delta.Y);
+			else return (long)(e1.Delta.Y) * (e2.Delta.X) ==
+			  (long)(e1.Delta.X) * (e2.Delta.Y);
 		}
 		//------------------------------------------------------------------------------
 
@@ -657,7 +657,7 @@ namespace ClipperLib
 				return Int128.Int128Mul(pt1.Y - pt2.Y, pt2.X - pt3.X) ==
 				  Int128.Int128Mul(pt1.X - pt2.X, pt2.Y - pt3.Y);
 			else return
-			  (cInt)(pt1.Y - pt2.Y) * (pt2.X - pt3.X) - (cInt)(pt1.X - pt2.X) * (pt2.Y - pt3.Y) == 0;
+			  (long)(pt1.Y - pt2.Y) * (pt2.X - pt3.X) - (long)(pt1.X - pt2.X) * (pt2.Y - pt3.Y) == 0;
 		}
 		//------------------------------------------------------------------------------
 
@@ -668,7 +668,7 @@ namespace ClipperLib
 				return Int128.Int128Mul(pt1.Y - pt2.Y, pt3.X - pt4.X) ==
 				  Int128.Int128Mul(pt1.X - pt2.X, pt3.Y - pt4.Y);
 			else return
-			  (cInt)(pt1.Y - pt2.Y) * (pt3.X - pt4.X) - (cInt)(pt1.X - pt2.X) * (pt3.Y - pt4.Y) == 0;
+			  (long)(pt1.Y - pt2.Y) * (pt3.X - pt4.X) - (long)(pt1.X - pt2.X) * (pt3.Y - pt4.Y) == 0;
 		}
 		//------------------------------------------------------------------------------
 
@@ -1114,7 +1114,7 @@ namespace ClipperLib
 		}
 		//------------------------------------------------------------------------------
 
-		internal Boolean PopLocalMinima(cInt Y, out LocalMinima current)
+		internal bool PopLocalMinima(long Y, out LocalMinima current)
 		{
 			current = m_CurrentLM;
 			if (m_CurrentLM != null && m_CurrentLM.Y == Y)
@@ -1189,7 +1189,7 @@ namespace ClipperLib
 		}
 		//------------------------------------------------------------------------------
 
-		internal void InsertScanbeam(cInt Y)
+		internal void InsertScanbeam(long Y)
 		{
 			//single-linked list: sorted descending, ignoring dups.
 			if (m_Scanbeam == null)
@@ -1218,7 +1218,7 @@ namespace ClipperLib
 		}
 		//------------------------------------------------------------------------------
 
-		internal Boolean PopScanbeam(out cInt Y)
+		internal bool PopScanbeam(out long Y)
 		{
 			if (m_Scanbeam == null)
 			{
@@ -1231,7 +1231,7 @@ namespace ClipperLib
 		}
 		//------------------------------------------------------------------------------
 
-		internal Boolean LocalMinimaPending()
+		internal bool LocalMinimaPending()
 		{
 			return (m_CurrentLM != null);
 		}
@@ -1406,7 +1406,7 @@ namespace ClipperLib
 		}
 		//------------------------------------------------------------------------------
 
-		private void InsertMaxima(cInt X)
+		private void InsertMaxima(long X)
 		{
 			//double-linked list: sorted ascending, ignoring dups.
 			Maxima newMax = new Maxima();
@@ -1542,7 +1542,7 @@ namespace ClipperLib
 				m_SortedEdges = null;
 				m_Maxima = null;
 
-				cInt botY, topY;
+				long botY, topY;
 				if (!PopScanbeam(out botY)) return false;
 				InsertLocalMinimaIntoAEL(botY);
 				while (PopScanbeam(out topY) || LocalMinimaPending())
@@ -1626,7 +1626,7 @@ namespace ClipperLib
       //------------------------------------------------------------------------------
 #endif
 
-		private void InsertLocalMinimaIntoAEL(cInt botY)
+		private void InsertLocalMinimaIntoAEL(long botY)
 		{
 			LocalMinima lm;
 			while (PopLocalMinima(botY, out lm))
@@ -2003,7 +2003,7 @@ namespace ClipperLib
 		}
 		//------------------------------------------------------------------------------
 
-		internal Boolean PopEdgeFromSEL(out TEdge e)
+		internal bool PopEdgeFromSEL(out TEdge e)
 		{
 			//Pop edge from front of SEL (ie SEL is a FILO list)
 			e = m_SortedEdges;
@@ -2136,8 +2136,8 @@ namespace ClipperLib
 
 			if (prevE != null && prevE.OutIdx >= 0 && prevE.Top.Y < pt.Y && e.Top.Y < pt.Y)
 			{
-				cInt xPrev = TopX(prevE, pt.Y);
-				cInt xE = TopX(e, pt.Y);
+				long xPrev = TopX(prevE, pt.Y);
+				long xE = TopX(e, pt.Y);
 				if ((xPrev == xE) && (e.WindDelta != 0) && (prevE.WindDelta != 0) &&
 				  SlopesEqual(new IntPoint(xPrev, pt.Y), prevE.Top, new IntPoint(xE, pt.Y), e.Top, m_UseFullRange))
 				{
@@ -2206,7 +2206,7 @@ namespace ClipperLib
 		}
 		//------------------------------------------------------------------------------
 
-		private bool HorzSegmentsOverlap(cInt seg1a, cInt seg1b, cInt seg2a, cInt seg2b)
+		private bool HorzSegmentsOverlap(long seg1a, long seg1b, long seg2a, long seg2b)
 		{
 			if (seg1a > seg1b) Swap(ref seg1a, ref seg1b);
 			if (seg2a > seg2b) Swap(ref seg2a, ref seg2b);
@@ -2640,7 +2640,7 @@ namespace ClipperLib
 			else if ((e1Wc == 0 || e1Wc == 1) && (e2Wc == 0 || e2Wc == 1))
 			{
 				//neither edge is currently contributing ...
-				cInt e1Wc2, e2Wc2;
+				long e1Wc2, e2Wc2;
 				switch (e1FillType2)
 				{
 					case PolyFillType.pftPositive: e1Wc2 = e1.WindCnt2; break;
@@ -2708,7 +2708,7 @@ namespace ClipperLib
 		}
 		//------------------------------------------------------------------------------
 
-		void GetHorzDirection(TEdge HorzEdge, out Direction Dir, out cInt Left, out cInt Right)
+		void GetHorzDirection(TEdge HorzEdge, out Direction Dir, out long Left, out long Right)
 		{
 			if (HorzEdge.Bot.X < HorzEdge.Top.X)
 			{
@@ -2728,7 +2728,7 @@ namespace ClipperLib
 		private void ProcessHorizontal(TEdge horzEdge)
 		{
 			Direction dir;
-			cInt horzLeft, horzRight;
+			long horzLeft, horzRight;
 			bool IsOpen = horzEdge.WindDelta == 0;
 
 			GetHorzDirection(horzEdge, out dir, out horzLeft, out horzRight);
@@ -2959,7 +2959,7 @@ namespace ClipperLib
 		}
 		//------------------------------------------------------------------------------
 
-		private bool ProcessIntersections(cInt topY)
+		private bool ProcessIntersections(long topY)
 		{
 			if (m_ActiveEdges == null) return true;
 			try
@@ -2982,7 +2982,7 @@ namespace ClipperLib
 		}
 		//------------------------------------------------------------------------------
 
-		private void BuildIntersectList(cInt topY)
+		private void BuildIntersectList(long topY)
 		{
 			if (m_ActiveEdges == null) return;
 
@@ -3088,13 +3088,13 @@ namespace ClipperLib
 		}
 		//------------------------------------------------------------------------------
 
-		internal static cInt Round(double value)
+		internal static long Round(double value)
 		{
-			return value < 0 ? (cInt)(value - 0.5) : (cInt)(value + 0.5);
+			return value < 0 ? (long)(value - 0.5) : (long)(value + 0.5);
 		}
 		//------------------------------------------------------------------------------
 
-		private static cInt TopX(TEdge edge, cInt currentY)
+		private static long TopX(TEdge edge, long currentY)
 		{
 			if (currentY == edge.Top.Y)
 				return edge.Top.X;
@@ -3177,7 +3177,7 @@ namespace ClipperLib
 		}
 		//------------------------------------------------------------------------------
 
-		private void ProcessEdgesAtTopOfScanbeam(cInt topY)
+		private void ProcessEdgesAtTopOfScanbeam(long topY)
 		{
 			TEdge e = m_ActiveEdges;
 			while (e != null)
@@ -3510,7 +3510,7 @@ namespace ClipperLib
 		}
 		//------------------------------------------------------------------------------
 
-		bool GetOverlap(cInt a1, cInt a2, cInt b1, cInt b2, out cInt Left, out cInt Right)
+		bool GetOverlap(long a1, long a2, long b1, long b2, out long Left, out long Right)
 		{
 			if (a1 < a2)
 			{
@@ -3687,7 +3687,7 @@ namespace ClipperLib
 					op2b = op2b.Next;
 				if (op2b.Next == op2 || op2b.Next == op1) return false; //a flat 'polygon'
 
-				cInt Left, Right;
+				long Left, Right;
 				//Op1 -. Op1b & Op2 -. Op2b are the extremites of the horizontal edges
 				if (!GetOverlap(op1.Pt.X, op1b.Pt.X, op2.Pt.X, op2b.Pt.X, out Left, out Right))
 					return false;
@@ -3831,12 +3831,12 @@ namespace ClipperLib
 			//returns 0 if false, +1 if true, -1 if pt ON polygon boundary
 			int result = 0;
 			OutPt startOp = op;
-			cInt ptx = pt.X, pty = pt.Y;
-			cInt poly0x = op.Pt.X, poly0y = op.Pt.Y;
+			long ptx = pt.X, pty = pt.Y;
+			long poly0x = op.Pt.X, poly0y = op.Pt.Y;
 			do
 			{
 				op = op.Next;
-				cInt poly1x = op.Pt.X, poly1y = op.Pt.Y;
+				long poly1x = op.Pt.X, poly1y = op.Pt.Y;
 
 				if (poly1y == pty)
 				{
@@ -4484,9 +4484,9 @@ namespace ClipperLib
 		}
 		//------------------------------------------------------------------------------
 
-		internal static cInt Round(double value)
+		internal static long Round(double value)
 		{
-			return value < 0 ? (cInt)(value - 0.5) : (cInt)(value + 0.5);
+			return value < 0 ? (long)(value - 0.5) : (long)(value + 0.5);
 		}
 		//------------------------------------------------------------------------------
 
@@ -4709,11 +4709,11 @@ namespace ClipperLib
 					if (node.m_endtype == EndType.etOpenButt)
 					{
 						int j = len - 1;
-						pt1 = new IntPoint((cInt)Round(m_srcPoly[j].X + m_normals[j].X *
-						  delta), (cInt)Round(m_srcPoly[j].Y + m_normals[j].Y * delta));
+						pt1 = new IntPoint((long)Round(m_srcPoly[j].X + m_normals[j].X *
+						  delta), (long)Round(m_srcPoly[j].Y + m_normals[j].Y * delta));
 						m_destPoly.Add(pt1);
-						pt1 = new IntPoint((cInt)Round(m_srcPoly[j].X - m_normals[j].X *
-						  delta), (cInt)Round(m_srcPoly[j].Y - m_normals[j].Y * delta));
+						pt1 = new IntPoint((long)Round(m_srcPoly[j].X - m_normals[j].X *
+						  delta), (long)Round(m_srcPoly[j].Y - m_normals[j].Y * delta));
 						m_destPoly.Add(pt1);
 					}
 					else
@@ -4740,11 +4740,11 @@ namespace ClipperLib
 
 					if (node.m_endtype == EndType.etOpenButt)
 					{
-						pt1 = new IntPoint((cInt)Round(m_srcPoly[0].X - m_normals[0].X * delta),
-						  (cInt)Round(m_srcPoly[0].Y - m_normals[0].Y * delta));
+						pt1 = new IntPoint((long)Round(m_srcPoly[0].X - m_normals[0].X * delta),
+						  (long)Round(m_srcPoly[0].Y - m_normals[0].Y * delta));
 						m_destPoly.Add(pt1);
-						pt1 = new IntPoint((cInt)Round(m_srcPoly[0].X + m_normals[0].X * delta),
-						  (cInt)Round(m_srcPoly[0].Y + m_normals[0].Y * delta));
+						pt1 = new IntPoint((long)Round(m_srcPoly[0].X + m_normals[0].X * delta),
+						  (long)Round(m_srcPoly[0].Y + m_normals[0].Y * delta));
 						m_destPoly.Add(pt1);
 					}
 					else

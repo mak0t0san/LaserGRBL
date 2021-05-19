@@ -184,10 +184,7 @@ namespace Svg.Web
                     }
                 }
                 // if a callback was registered, invoke it now
-                if (_callback != null)
-                {
-                    _callback(this);
-                }
+                _callback?.Invoke(this);
             }
 
             /// <summary>

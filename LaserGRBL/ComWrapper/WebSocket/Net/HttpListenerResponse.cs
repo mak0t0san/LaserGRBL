@@ -508,7 +508,7 @@ namespace WebSocketSharp.Net
       if (_contentType != null) {
         var type = _contentType.IndexOf ("charset=", StringComparison.Ordinal) == -1 &&
                    _contentEncoding != null
-                   ? String.Format ("{0}; charset={1}", _contentType, _contentEncoding.WebName)
+                   ? string.Format ("{0}; charset={1}", _contentType, _contentEncoding.WebName)
                    : _contentType;
 
         headers.InternalSet ("Content-Type", type, true);
@@ -552,7 +552,7 @@ namespace WebSocketSharp.Net
       }
       else {
         headers.InternalSet (
-          "Keep-Alive", String.Format ("timeout=15,max={0}", 100 - reuses), true);
+          "Keep-Alive", string.Format ("timeout=15,max={0}", 100 - reuses), true);
 
         if (_context.Request.ProtocolVersion < HttpVersion.Version11)
           headers.InternalSet ("Connection", "keep-alive", true);
@@ -747,8 +747,7 @@ namespace WebSocketSharp.Net
         throw new ArgumentNullException ("templateResponse");
 
       if (templateResponse._headers != null) {
-        if (_headers != null)
-          _headers.Clear ();
+          _headers?.Clear ();
 
         Headers.Add (templateResponse._headers);
       }

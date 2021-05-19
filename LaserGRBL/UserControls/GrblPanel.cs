@@ -89,7 +89,7 @@ namespace LaserGRBL.UserControls
 						sf.Alignment = q == GrblFile.CartesianQuadrant.II || q == GrblFile.CartesianQuadrant.III ? StringAlignment.Near : StringAlignment.Far;
 						sf.LineAlignment = q == GrblFile.CartesianQuadrant.III || q == GrblFile.CartesianQuadrant.IV ? StringAlignment.Far : StringAlignment.Near;
 
-						String position = string.Format("X: {0:0.000} Y: {1:0.000}", Core != null ? mLastMPos.X : 0, Core != null ? mLastMPos.Y : 0);
+						string position = string.Format("X: {0:0.000} Y: {1:0.000}", Core != null ? mLastMPos.X : 0, Core != null ? mLastMPos.Y : 0);
 
                         if (Core != null && (mLastWPos.Z != 0 || mLastMPos.Z != 0 || forcez))
                             position = position + string.Format(" Z: {0:0.000}", mLastMPos.Z);
@@ -103,7 +103,7 @@ namespace LaserGRBL.UserControls
                         if (mCurF != 0 || mCurS != 0 || mFSTrig)
 						{
 							mFSTrig = true;
-							String fs = string.Format("F: {0:00000.##} S: {1:000.##}", Core != null ? mCurF : 0, Core != null ? mCurS : 0);
+							string fs = string.Format("F: {0:00000.##} S: {1:000.##}", Core != null ? mCurF : 0, Core != null ? mCurS : 0);
 							position = position + "\n" + fs;
 						}
 
@@ -185,10 +185,9 @@ namespace LaserGRBL.UserControls
 					g.PixelOffsetMode = PixelOffsetMode.HighQuality;
 					g.TextRenderingHint = System.Drawing.Text.TextRenderingHint.AntiAliasGridFit;
 
-					if (Core != null /*&& Core.HasProgram*/)
-						Core.LoadedFile.DrawOnGraphics(g, wSize);
+                    Core?.LoadedFile.DrawOnGraphics(g, wSize);
 
-					mLastMatrix = g.Transform;
+                    mLastMatrix = g.Transform;
 				}
 
 				AssignBMP(bmp);
@@ -231,10 +230,9 @@ namespace LaserGRBL.UserControls
 		{
 			lock (this)
 			{
-				if (mBitmap != null)
-					mBitmap.Dispose();
+                mBitmap?.Dispose();
 
-				mBitmap = bmp;
+                mBitmap = bmp;
 			}
 			Invalidate();
 		}

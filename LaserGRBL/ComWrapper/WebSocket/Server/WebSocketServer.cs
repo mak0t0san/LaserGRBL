@@ -743,7 +743,7 @@ namespace WebSocketSharp.Server
           _listener.Stop ();
         }
         finally {
-          _services.Stop (1006, String.Empty);
+          _services.Stop (1006, string.Empty);
         }
       }
       catch {
@@ -898,8 +898,7 @@ namespace WebSocketSharp.Server
           _log.Fatal (ex.Message);
           _log.Debug (ex.ToString ());
 
-          if (cl != null)
-            cl.Close ();
+          cl?.Close ();
 
           break;
         }
@@ -940,7 +939,7 @@ namespace WebSocketSharp.Server
           startReceiving ();
         }
         catch {
-          _services.Stop (1011, String.Empty);
+          _services.Stop (1011, string.Empty);
           throw;
         }
 
@@ -1338,7 +1337,7 @@ namespace WebSocketSharp.Server
     /// </exception>
     public void Stop ()
     {
-      stop (1005, String.Empty);
+      stop (1005, string.Empty);
     }
 
     /// <summary>

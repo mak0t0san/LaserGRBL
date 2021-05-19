@@ -335,12 +335,12 @@ namespace WebSocketSharp
         cntFmt = "{0,16:X}";
       }
 
-      var spFmt = String.Format ("{{0,{0}}}", cntDigit);
-      var headerFmt = String.Format (@"
+      var spFmt = string.Format ("{{0,{0}}}", cntDigit);
+      var headerFmt = string.Format (@"
 {0} 01234567 89ABCDEF 01234567 89ABCDEF
 {0}+--------+--------+--------+--------+\n", spFmt);
-      var lineFmt = String.Format ("{0}|{{1,8}} {{2,8}} {{3,8}} {{4,8}}|\n", cntFmt);
-      var footerFmt = String.Format ("{0}+--------+--------+--------+--------+", spFmt);
+      var lineFmt = string.Format ("{0}|{{1,8}} {{2,8}} {{3,8}} {{4,8}}|\n", cntFmt);
+      var footerFmt = string.Format ("{0}+--------+--------+--------+--------+", spFmt);
 
       var output = new StringBuilder (64);
       Func<Action<string, string, string, string>> linePrinter = () => {
@@ -350,7 +350,7 @@ namespace WebSocketSharp
       };
       var printLine = linePrinter ();
 
-      output.AppendFormat (headerFmt, String.Empty);
+      output.AppendFormat (headerFmt, string.Empty);
 
       var bytes = frame.ToArray ();
       for (long i = 0; i <= cnt; i++) {
@@ -368,12 +368,12 @@ namespace WebSocketSharp
         if (rem > 0)
           printLine (
             Convert.ToString (bytes[j], 2).PadLeft (8, '0'),
-            rem >= 2 ? Convert.ToString (bytes[j + 1], 2).PadLeft (8, '0') : String.Empty,
-            rem == 3 ? Convert.ToString (bytes[j + 2], 2).PadLeft (8, '0') : String.Empty,
-            String.Empty);
+            rem >= 2 ? Convert.ToString (bytes[j + 1], 2).PadLeft (8, '0') : string.Empty,
+            rem == 3 ? Convert.ToString (bytes[j + 2], 2).PadLeft (8, '0') : string.Empty,
+            string.Empty);
       }
 
-      output.AppendFormat (footerFmt, String.Empty);
+      output.AppendFormat (footerFmt, string.Empty);
       return output.ToString ();
     }
 
@@ -383,14 +383,14 @@ namespace WebSocketSharp
       var payloadLen = frame._payloadLength;
 
       // Extended Payload Length
-      var extPayloadLen = payloadLen > 125 ? frame.FullPayloadLength.ToString () : String.Empty;
+      var extPayloadLen = payloadLen > 125 ? frame.FullPayloadLength.ToString () : string.Empty;
 
       // Masking Key
       var maskingKey = BitConverter.ToString (frame._maskingKey);
 
       // Payload Data
       var payload = payloadLen == 0
-                    ? String.Empty
+                    ? string.Empty
                     : payloadLen > 125
                       ? "---"
                       : frame.IsText && !(frame.IsFragment || frame.IsMasked || frame.IsCompressed)
@@ -409,7 +409,7 @@ Extended Payload Length: {7}
             Masking Key: {8}
            Payload Data: {9}";
 
-      return String.Format (
+      return string.Format (
         fmt,
         frame._fin,
         frame._rsv1,

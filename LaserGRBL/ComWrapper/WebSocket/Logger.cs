@@ -129,7 +129,7 @@ namespace WebSocketSharp
         lock (_sync) {
           _file = value;
           Warn (
-            String.Format ("The current path to the log file has been changed to {0}.", _file));
+            string.Format ("The current path to the log file has been changed to {0}.", _file));
         }
       }
     }
@@ -151,7 +151,7 @@ namespace WebSocketSharp
       set {
         lock (_sync) {
           _level = value;
-          Warn (String.Format ("The current logging level has been changed to {0}.", _level));
+          Warn (string.Format ("The current logging level has been changed to {0}.", _level));
         }
       }
     }

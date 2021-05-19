@@ -534,13 +534,13 @@ namespace WebSocketSharp.Net
       }
 
       if (schm == null)
-        schm = (websocketRequest ? "ws" : "http") + (secure ? "s" : String.Empty);
+        schm = (websocketRequest ? "ws" : "http") + (secure ? "s" : string.Empty);
 
       var colon = host.IndexOf (':');
       if (colon == -1)
-        host = String.Format ("{0}:{1}", host, schm == "http" || schm == "ws" ? 80 : 443);
+        host = string.Format ("{0}:{1}", host, schm == "http" || schm == "ws" ? 80 : 443);
 
-      var url = String.Format ("{0}://{1}{2}", schm, host, path);
+      var url = string.Format ("{0}://{1}{2}", schm, host, path);
 
       Uri res;
       if (!Uri.TryCreate (url, UriKind.Absolute, out res))
@@ -578,10 +578,8 @@ namespace WebSocketSharp.Net
         return null;
 
       var res = AuthenticationResponse.Parse (response);
-      if (res == null)
-        return null;
 
-      var id = res.ToIdentity ();
+      var id = res?.ToIdentity ();
       if (id == null)
         return null;
 
@@ -639,7 +637,7 @@ namespace WebSocketSharp.Net
           var name = UrlDecode (component.Substring (0, i), encoding);
           var val = component.Length > i + 1
                     ? UrlDecode (component.Substring (i + 1), encoding)
-                    : String.Empty;
+                    : string.Empty;
 
           res.Add (name, val);
         }
@@ -880,7 +878,7 @@ namespace WebSocketSharp.Net
             entity.Length = 0;
             haveTrailingDigits = false;
           }
-          else if (Char.IsDigit (c)) {
+          else if (char.IsDigit (c)) {
             number = number * 10 + ((int) c - '0');
             haveTrailingDigits = true;
           }
@@ -1066,7 +1064,7 @@ namespace WebSocketSharp.Net
       return bytes == null
              ? null
              : (len = bytes.Length) == 0
-               ? String.Empty
+               ? string.Empty
                : InternalUrlDecode (bytes, 0, len, encoding ?? Encoding.UTF8);
     }
 
@@ -1077,7 +1075,7 @@ namespace WebSocketSharp.Net
 
       var len = bytes.Length;
       if (len == 0 || count == 0)
-        return String.Empty;
+        return string.Empty;
 
       if (offset < 0 || offset >= len)
         throw new ArgumentOutOfRangeException ("offset");
@@ -1137,7 +1135,7 @@ namespace WebSocketSharp.Net
       return bytes == null
              ? null
              : (len = bytes.Length) == 0
-               ? String.Empty
+               ? string.Empty
                : Encoding.ASCII.GetString (InternalUrlEncodeToBytes (bytes, 0, len));
     }
 
@@ -1182,7 +1180,7 @@ namespace WebSocketSharp.Net
       return encoded == null
              ? null
              : encoded.Length == 0
-               ? String.Empty
+               ? string.Empty
                : Encoding.ASCII.GetString (encoded);
     }
 

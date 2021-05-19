@@ -79,9 +79,9 @@ namespace LaserGRBL
 			CbRedoHoming.Checked = allowHoming && suggestHoming;
 			CbRestoreWCO.Visible = allowWCO;
 			CbRestoreWCO.Checked = allowWCO && suggestWCO;
-			CbRestoreWCO.Text = String.Format("{0} X{1} Y{2}", CbRestoreWCO.Text, wcopos.X, wcopos.Y);
+			CbRestoreWCO.Text = string.Format("{0} X{1} Y{2}", CbRestoreWCO.Text, wcopos.X, wcopos.Y);
             if (wcopos.Z != 0)
-                CbRestoreWCO.Text += String.Format(" Z{0}", wcopos.Z);
+                CbRestoreWCO.Text += string.Format(" Z{0}", wcopos.Z);
         }
 
 		public bool DoHoming

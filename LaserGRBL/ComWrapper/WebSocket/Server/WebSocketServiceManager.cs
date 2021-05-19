@@ -271,8 +271,7 @@ namespace WebSocketSharp.Server
           host.Sessions.Broadcast (opcode, data, cache);
         }
 
-        if (completed != null)
-          completed ();
+        completed?.Invoke ();
       }
       catch (Exception ex) {
         _log.Error (ex.Message);
@@ -294,8 +293,7 @@ namespace WebSocketSharp.Server
           host.Sessions.Broadcast (opcode, stream, cache);
         }
 
-        if (completed != null)
-          completed ();
+        completed?.Invoke ();
       }
       catch (Exception ex) {
         _log.Error (ex.Message);
@@ -744,7 +742,7 @@ namespace WebSocketSharp.Server
 
       if (len < length) {
         _log.Warn (
-          String.Format (
+          string.Format (
             "Only {0} byte(s) of data could be read from the specified stream.",
             len
           )
@@ -860,7 +858,7 @@ namespace WebSocketSharp.Server
 
       foreach (var host in hosts) {
         if (host.State == ServerState.Start)
-          host.Stop (1001, String.Empty);
+          host.Stop (1001, string.Empty);
       }
     }
 
@@ -933,7 +931,7 @@ namespace WebSocketSharp.Server
       }
 
       if (host.State == ServerState.Start)
-        host.Stop (1001, String.Empty);
+        host.Stop (1001, string.Empty);
 
       return true;
     }

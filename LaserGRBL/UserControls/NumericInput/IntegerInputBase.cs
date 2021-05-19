@@ -184,9 +184,8 @@ namespace LaserGRBL.UserControls.NumericInput
 					_CurrentValue = value;
 					_ForcedText = null;
 					UpdateStatus();
-					if (CurrentValueChanged != null)
-						CurrentValueChanged(this, O, value, byuser);
-				}
+                    CurrentValueChanged?.Invoke(this, O, value, byuser);
+                }
 			}
 		}
 
@@ -258,10 +257,8 @@ namespace LaserGRBL.UserControls.NumericInput
 			catch {OldEditValue = _CurrentValue;}
 
 			UpdateStatus();
-			if (BeginEdit != null) {
-				BeginEdit(this);
-			}
-		}
+            BeginEdit?.Invoke(this);
+        }
 
 		private int NewEditValue;
 		protected virtual void OnEndEdit()
@@ -276,10 +273,8 @@ namespace LaserGRBL.UserControls.NumericInput
 			}
 			catch {UpdateStatus();}
 
-			if (EndEdit != null) {
-				EndEdit(this);
-			}
-		}
+            EndEdit?.Invoke(this);
+        }
 
 		protected virtual int ParseEditValue()
 		{

@@ -36,9 +36,9 @@ namespace LaserGRBL
 			{
 				string ResourceName;
 				if (value.IsOrtur)
-					ResourceName = String.Format("LaserGRBL.CSV.setting_codes.ortur.v1.0.csv"); 
+					ResourceName = string.Format("LaserGRBL.CSV.setting_codes.ortur.v1.0.csv"); 
 				else
-					ResourceName = String.Format("LaserGRBL.CSV.setting_codes.v{0}.{1}.csv", value.Major, value.Minor);
+					ResourceName = string.Format("LaserGRBL.CSV.setting_codes.v{0}.{1}.csv", value.Major, value.Minor);
 
 
 				Settings = new CsvDictionary(ResourceName, 3);
@@ -51,22 +51,22 @@ namespace LaserGRBL
 	{
 		public class Element
 		{
-			protected Char mCommand;
-			protected Decimal mNumber;
+			protected char mCommand;
+			protected decimal mNumber;
 
 			public static implicit operator Element(string value)
 			{return new Element(value[0], decimal.Parse(value.Substring(1), System.Globalization.CultureInfo.InvariantCulture));}
 
-			public Element(Char Command, Decimal Number)
+			public Element(char Command, decimal Number)
 			{
 				mCommand = Command;
 				mNumber = Number;
 			}
 
-			public Char Command
+			public char Command
 			{ get { return mCommand; } }
 
-			public Decimal Number
+			public decimal Number
 			{ get { return mNumber; } }
 
 			public override string ToString()
@@ -150,15 +150,15 @@ namespace LaserGRBL
 
 						if (!comment)
 						{
-							if (Char.IsLetter(c))
+							if (char.IsLetter(c))
 							{
 								if (cmd != '\0') //chiudi il comando precedente
-									Add(new Element(cmd, Decimal.Parse(num, System.Globalization.NumberFormatInfo.InvariantInfo)));
+									Add(new Element(cmd, decimal.Parse(num, System.Globalization.NumberFormatInfo.InvariantInfo)));
 
 								cmd = c; //apri il comando successivo
 								num = "";
 							}
-							else if (Char.IsNumber(c) || c == '.' || c == '-')
+							else if (char.IsNumber(c) || c == '.' || c == '-')
 							{
 								num += c; //accumula il dato
 							}
@@ -171,7 +171,7 @@ namespace LaserGRBL
 					mLine = sb.ToString();
 
 					if (cmd != '\0')
-						Add(new Element(cmd, Decimal.Parse(num, System.Globalization.NumberFormatInfo.InvariantInfo))); //aggiungi l'ultimo
+						Add(new Element(cmd, decimal.Parse(num, System.Globalization.NumberFormatInfo.InvariantInfo))); //aggiungi l'ultimo
 				}
 			}
 			catch { }
@@ -377,7 +377,7 @@ namespace LaserGRBL
 		{ return mHelper.ContainsKey(key) ? mHelper[key] : null; }
 
 		public string GetMessage() //per la visualizzazione
-		{  return mRepeatCount == 0 ? Command : String.Format("{0} (Retry {1})", Command, mRepeatCount); } 
+		{  return mRepeatCount == 0 ? Command : string.Format("{0} (Retry {1})", Command, mRepeatCount); } 
 
 		public string GetToolTip(bool decode)
 		{

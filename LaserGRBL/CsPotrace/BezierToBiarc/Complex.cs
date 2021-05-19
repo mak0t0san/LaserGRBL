@@ -188,7 +188,7 @@ namespace CsPotrace.BezierToBiarc
     /// <returns>Numero complesso contenente un componente reale uguale a <paramref name="value" /> e un componente immaginario uguale a zero. </returns>
     /// <param name="value">Valore da convertire in un numero complesso.</param>
     
-    public static explicit operator Complex(Decimal value)
+    public static explicit operator Complex(decimal value)
     {
       return new Complex((double) value, 0.0);
     }

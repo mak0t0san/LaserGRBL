@@ -309,7 +309,7 @@ namespace LaserGRBL.RasterConverter
 						return false;
 
 				if (Math.Max(IIOffsetX.CurrentValue, 0) + IISizeW.CurrentValue > (float)mCore.Configuration.TableWidth || Math.Max(IIOffsetY.CurrentValue, 0) + IISizeH.CurrentValue > (float)mCore.Configuration.TableHeight)
-					if (MessageBox.Show(String.Format(Strings.WarnSoftLimitOOB, (int)mCore.Configuration.TableWidth, (int)mCore.Configuration.TableHeight), Strings.WarnSoftLimitTitle, MessageBoxButtons.YesNo, MessageBoxIcon.Warning) != DialogResult.Yes)
+					if (MessageBox.Show(string.Format(Strings.WarnSoftLimitOOB, (int)mCore.Configuration.TableWidth, (int)mCore.Configuration.TableHeight), Strings.WarnSoftLimitTitle, MessageBoxButtons.YesNo, MessageBoxIcon.Warning) != DialogResult.Yes)
 						return false;
 			}
 

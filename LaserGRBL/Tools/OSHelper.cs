@@ -18,8 +18,8 @@ namespace Tools
 		{
 			try
 			{
-				Type type = typeof(String);
-				String uri = type.Assembly.CodeBase;
+				Type type = typeof(string);
+				string uri = type.Assembly.CodeBase;
 				FileVersionInfo info = FileVersionInfo.GetVersionInfo(new Uri(uri).LocalPath);
 
 				return $"{info.FileName} {info.FileVersion}";
@@ -64,12 +64,12 @@ namespace Tools
 			return rv;
 		}
 
-		public static Byte SetBit(Byte value, int position)
+		public static byte SetBit(byte value, int position)
 		{
 			if (position < 0 || position > 7)
 				throw new ArgumentOutOfRangeException("position", "position must be in the range 0 - 7");
 
-			return (Byte)(value | (1 << position));
+			return (byte)(value | (1 << position));
 		}
 
 
@@ -211,7 +211,7 @@ namespace Tools
 					try
 					{
 
-						string edition = String.Empty;
+						string edition = string.Empty;
 
 						OperatingSystem osVersion = Environment.OSVersion;
 						OSVERSIONINFOEX osVersionInfo = new OSVERSIONINFOEX();
@@ -749,7 +749,7 @@ namespace Tools
 				{
 					try
 					{
-						string servicePack = String.Empty;
+						string servicePack = string.Empty;
 						OSVERSIONINFOEX osVersionInfo = new OSVERSIONINFOEX();
 
 						osVersionInfo.dwOSVersionInfoSize = Marshal.SizeOf(typeof(OSVERSIONINFOEX));

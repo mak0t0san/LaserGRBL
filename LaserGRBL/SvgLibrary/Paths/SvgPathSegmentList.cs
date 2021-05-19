@@ -29,19 +29,13 @@ namespace Svg.Pathing
         public void Insert(int index, SvgPathSegment item)
         {
             this._segments.Insert(index, item);
-            if (this._owner != null)
-            {
-                this._owner.OnPathUpdated();
-            }
+            _owner?.OnPathUpdated();
         }
 
         public void RemoveAt(int index)
         {
             this._segments.RemoveAt(index);
-            if (this._owner != null)
-            {
-                this._owner.OnPathUpdated();
-            }
+            _owner?.OnPathUpdated();
         }
 
         public SvgPathSegment this[int index]
@@ -53,10 +47,7 @@ namespace Svg.Pathing
         public void Add(SvgPathSegment item)
         {
             this._segments.Add(item);
-            if (this._owner != null)
-            {
-                this._owner.OnPathUpdated();
-            }
+            _owner?.OnPathUpdated();
         }
 
         public void Clear()
@@ -90,10 +81,7 @@ namespace Svg.Pathing
 
             if (removed)
             {
-                if (this._owner != null)
-                {
-                    this._owner.OnPathUpdated();
-                }
+                _owner?.OnPathUpdated();
             }
 
             return removed;

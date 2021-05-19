@@ -239,8 +239,7 @@ namespace WebSocketSharp.Server
       var cache = new Dictionary<CompressionMethod, byte[]> ();
       try {
         Broadcast (opcode, data, cache);
-        if (completed != null)
-          completed ();
+        completed?.Invoke ();
       }
       catch (Exception ex) {
         _logger.Fatal (ex.ToString ());
@@ -255,8 +254,7 @@ namespace WebSocketSharp.Server
       var cache = new Dictionary <CompressionMethod, Stream> ();
       try {
         Broadcast (opcode, stream, cache);
-        if (completed != null)
-          completed ();
+        completed?.Invoke ();
       }
       catch (Exception ex) {
         _logger.Fatal (ex.ToString ());
@@ -543,7 +541,7 @@ namespace WebSocketSharp.Server
 
           if (len < length)
             _logger.Warn (
-              String.Format (
+              string.Format (
                 "The data with 'length' cannot be read from 'stream':\n  expected: {0}\n  actual: {1}",
                 length,
                 len));

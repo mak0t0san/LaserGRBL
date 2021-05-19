@@ -218,11 +218,8 @@ namespace LaserGRBL.RasterConverter
 					originalData[index] = transformed;
 
 					// apply a dither algorithm to this pixel
-					if (dither != null)
-					{
-						dither.Diffuse(originalData, current, transformed, col, row, size.Width, size.Height);
-					}
-				}
+                    dither?.Diffuse(originalData, current, transformed, col, row, size.Width, size.Height);
+                }
 			}
 
 			return Cyotek.DitheringTest.Helpers.ImageUtilities.ToBitmap(originalData, size);

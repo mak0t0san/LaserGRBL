@@ -166,9 +166,8 @@ namespace LaserGRBL.UserControls
 				if (m_SpeedValue != newVal)
 				{
 					m_SpeedValue = newVal;
-					if (SpeedChanged != null)
-						SpeedChanged(this, new SpeedEventArgs(m_SpeedValue));
-					Invalidate();
+                    SpeedChanged?.Invoke(this, new SpeedEventArgs(m_SpeedValue));
+                    Invalidate();
 				}
 			}
 		}
@@ -244,9 +243,9 @@ namespace LaserGRBL.UserControls
 						{
 							hit = m;
 							if (m.IsHome)
-								info = String.Format("Home\nF{0,5 }", SpeedValue); 
+								info = string.Format("Home\nF{0,5 }", SpeedValue); 
 							else
-								info = String.Format("X{0,5 }\r\nY{1,5 }\nF{2,5 }", m.Mouvement.X, m.Mouvement.Y, SpeedValue);
+								info = string.Format("X{0,5 }\r\nY{1,5 }\nF{2,5 }", m.Mouvement.X, m.Mouvement.Y, SpeedValue);
 						}
 					}
 				}
@@ -401,15 +400,13 @@ namespace LaserGRBL.UserControls
 						if (z is MouvementZone)
 						{
 							if (((MouvementZone)z).Mouvement.IsEmpty)
-							{
-								if (this.HomeClick != null)
-									this.HomeClick(this, new HomeEventArgs(SpeedValue));
-							}
+                            {
+                                HomeClick?.Invoke(this, new HomeEventArgs(SpeedValue));
+                            }
 							else
-							{
-								if (this.MoveClick != null)
-									this.MoveClick(this, new MoveEventArgs(((MouvementZone)z).Mouvement, SpeedValue));
-							}
+                            {
+                                MoveClick?.Invoke(this, new MoveEventArgs(((MouvementZone)z).Mouvement, SpeedValue));
+                            }
 						}
 						else if (z is SpeedPercentZone)
 						{

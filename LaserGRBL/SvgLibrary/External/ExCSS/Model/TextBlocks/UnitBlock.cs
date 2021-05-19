@@ -12,9 +12,9 @@ namespace ExCSS.Model.TextBlocks
             GrammarSegment = type;
         }
 
-        internal Single Value
+        internal float Value
         {
-            get { return Single.Parse(_value, CultureInfo.InvariantCulture); }
+            get { return float.Parse(_value, CultureInfo.InvariantCulture); }
         }
 
         internal string Unit { get; private set; }

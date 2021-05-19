@@ -100,9 +100,13 @@ namespace LaserGRBL
         protected override void ManageReceivedLine(string rline)
         {
             if (IsMarlinRealTimeStatusMessage(rline))
+            {
                 ManageMarlinRealTimeStatus(rline);
+            }
             else
+            {
                 base.ManageReceivedLine(rline);
+            }
         }
 
         private bool IsMarlinRealTimeStatusMessage(string rline) => rline.StartsWith("X:");

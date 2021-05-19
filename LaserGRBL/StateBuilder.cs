@@ -478,7 +478,7 @@ namespace LaserGRBL
 			private const double a270 = Math.PI * 3.0 / 2.0;
 			private const double a360 = Math.PI * 2;
 
-			public static int GetQuadrant(Double angle)
+			public static int GetQuadrant(double angle)
 			{
 				var trueAngle = angle % (2 * Math.PI);
 
@@ -494,7 +494,7 @@ namespace LaserGRBL
 
 			//Oleg Petrochenko alghorithm
 			//From https://stackoverflow.com/questions/32365479/formula-to-calculate-bounding-coordinates-of-an-arc-in-space
-			public static Rect BBBox(Double startAngle, Double endAngle, Double r, Double centerX, Double centerY)
+			public static Rect BBBox(double startAngle, double endAngle, double r, double centerX, double centerY)
 			{
 				int startQuad = GetQuadrant(startAngle) - 1;
 				int endQuad = GetQuadrant(endAngle) - 1;
